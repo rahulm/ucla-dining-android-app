@@ -1,8 +1,13 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
+        <item name="android:color">#92BAD2</item>
+
+        <item name="android:typeface">normal</item>
+
+        <!--<item name="android:statusBarColor">@color/toolbar_custom_color</item>-->
     </style>
 
 </resources>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--<android.support.design.widget.CoordinatorLayout-->
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/coordinator"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+    <include layout="@layout/custom_toolbar_layout"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/main_content"
+        android:layout_marginTop="@dimen/custom_toolbar_height" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/main_button_options"
+        android:layout_gravity="center_horizontal|bottom" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:background="@drawable/custom_toolbar_dropshadow"
+        android:layout_marginTop="@dimen/custom_toolbar_height"
+        android:layout_gravity="center_horizontal" />
+
+
+</FrameLayout>
+
+
+<!--</android.support.design.widget.CoordinatorLayout>-->

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="toolbar_custom_color">#92BAD2</color>
+
+    <color name="ucla_blue">#3284BF</color>
+    <color name="ucla_yellow">#FFE800</color>
+    <color name="ucla_light_blue">#00A5E5</color>
+    <color name="ucla_gold">#FEBB36</color>
+    <color name="ucla_purple">#8237ff</color>
+    <color name="ucla_dark_blue">#0055A6</color>
+
+
+
+</resources>
