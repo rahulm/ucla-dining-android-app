@@ -8,6 +8,10 @@
         <item name="android:typeface">normal</item>
 
         <!--<item name="android:statusBarColor">@color/toolbar_custom_color</item>-->
+
+        <item name="colorPrimary">@color/ucla_light_blue</item>
+        <item name="colorPrimaryDark">@color/ucla_dark_blue</item>
+        <item name="colorAccent">@color/ucla_gold</item>
     </style>
 
 </resources>

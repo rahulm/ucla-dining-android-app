@@ -22,7 +22,8 @@
             android:adjustViewBounds="false"
             style="@style/Base.Widget.AppCompat.ActionButton"
             android:layout_gravity="center_vertical"
-            android:scaleType="center" />
+            android:scaleType="center"
+            android:foreground="?android:attr/selectableItemBackground"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -44,7 +45,8 @@
             android:background="@null"
             android:layout_gravity="center_vertical"
             style="@style/Base.Widget.AppCompat.ActionButton"
-            android:scaleType="center" />
+            android:scaleType="center"
+            android:foreground="?android:attr/selectableItemBackground"/>
     </LinearLayout>
 
 </android.support.v7.widget.Toolbar>

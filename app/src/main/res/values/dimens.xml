@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="custom_toolbar_height">60dp</dimen>
+
+
+    <dimen name="home_options_item_height">70dp</dimen>
 </resources>

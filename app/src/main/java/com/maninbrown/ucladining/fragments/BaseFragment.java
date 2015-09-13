@@ -13,11 +13,24 @@ import com.maninbrown.ucladining.MainActivity;
  */
 public abstract class BaseFragment extends Fragment {
 
+    private View mRootView;
+
     private String mToolbarTitleText = "UCLA Dining";
 
     private boolean mBackButtonIsOn = true;
 
     private boolean mRefreshButtonIsOn = true;
+
+
+
+    protected void setRootView(View view) {
+        mRootView = view;
+    }
+
+    protected View getRootView() {
+        return mRootView;
+    }
+
 
     // Toolbar options
     protected void setToolbarTitle(String title) {

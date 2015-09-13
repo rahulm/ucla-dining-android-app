@@ -2,6 +2,7 @@ package com.maninbrown.ucladining;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.maninbrown.ucladining.fragments.BaseFragment;
+import com.maninbrown.ucladining.fragments.HomeOptionsPage;
 
 
 /**
@@ -49,8 +51,19 @@ public class MainActivity extends AppCompatActivity {
         setUpContentFrame();
     }
 
+    @Override
+    public void onBackPressed() {
+        if (mCurrFragment==null || (mCurrFragment instanceof HomeOptionsPage)) {
+            finish();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     private void setUpContentFrame() {
         mContentFrame = (FrameLayout) findViewById(R.id.main_content);
+        setUpFragmentManager();
+        showFragment(new HomeOptionsPage());
     }
 
     private void setUpToolbar() {
@@ -82,6 +95,39 @@ public class MainActivity extends AppCompatActivity {
         mTitleView.setTypeface(typeface);
     }
 
+    /**
+     * setUpFragmentManager is used to correctly assign mContent when back stack changes, i.e. when the back button is pressed
+     */
+    private void setUpFragmentManager() {
+        getSupportFragmentManager()
+                .addOnBackStackChangedListener(new android.support.v4.app.FragmentManager.OnBackStackChangedListener() {
+                    @Override
+                    public void onBackStackChanged() {
+                        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_content);
+                        if (fragment == null) {
+                            Log.e(TAG, "onBackStackChanged fragment found is null!");
+                        } else {
+                            if (fragment instanceof BaseFragment) {
+                                mCurrFragment = (BaseFragment) fragment;
+                            } else {
+                                Log.e(TAG, "onBackStackChanged found an incorrect fragment!");
+                            }
+                        }
+                    }
+                });
+    }
+
+    public void showFragment(BaseFragment fragment) {
+        if (fragment!=null) {
+            mCurrFragment = fragment;
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.main_content, mCurrFragment)
+                    .addToBackStack(null)
+                    .commit();
+        }
+    }
+
 
     // Toolbar controls
 
@@ -111,11 +157,11 @@ public class MainActivity extends AppCompatActivity {
     public void toggleRefreshButton(boolean isOn) {
         if (mRefreshButton!=null) {
             if (isOn) {
-                mRefreshButton.setClickable(false);
-                mRefreshButton.setVisibility(View.INVISIBLE);
-            } else {
                 mRefreshButton.setVisibility(View.VISIBLE);
                 mRefreshButton.setClickable(true);
+            } else {
+                mRefreshButton.setClickable(false);
+                mRefreshButton.setVisibility(View.INVISIBLE);
             }
         }
     }
@@ -129,12 +175,14 @@ public class MainActivity extends AppCompatActivity {
     public void toggleBackButton(boolean isOn) {
         if (mBackButton!=null) {
             if (isOn) {
-                mBackButton.setClickable(false);
-                mBackButton.setVisibility(View.INVISIBLE);
-            } else {
                 mBackButton.setVisibility(View.VISIBLE);
                 mBackButton.setClickable(true);
+            } else {
+                mBackButton.setClickable(false);
+                mBackButton.setVisibility(View.INVISIBLE);
             }
         }
     }
+
+
 }
