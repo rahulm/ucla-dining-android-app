@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(MainActivity.this, "Back pressed", Toast.LENGTH_SHORT).show();
+                onBackPressed();
             }
         });
 
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 //                Toast.makeText(MainActivity.this, "Refresh pressed", Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "Refresh pressed!");
-                if (mCurrFragment!=null) mCurrFragment.doRefresh();
+                if (mCurrFragment!=null) mCurrFragment.doRefresh(null);
             }
         });
 
@@ -120,11 +121,21 @@ public class MainActivity extends AppCompatActivity {
     public void showFragment(BaseFragment fragment) {
         if (fragment!=null) {
             mCurrFragment = fragment;
+
+            // TODO: testing slide in animation
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.main_content, mCurrFragment)
+                    .add(R.id.main_content, fragment)
+                    .setCustomAnimations(R.anim.slide_in_right, 0)
+                    .show(fragment)
                     .addToBackStack(null)
                     .commit();
+
+//            getSupportFragmentManager()
+//                    .beginTransaction()
+//                    .replace(R.id.main_content, mCurrFragment)
+//                    .addToBackStack(null)
+//                    .commit();
         }
     }
 
