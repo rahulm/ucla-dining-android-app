@@ -4,4 +4,8 @@
 
 
     <dimen name="home_options_item_height">70dp</dimen>
+    <dimen name="card_corner_radius">3dp</dimen>
+    <dimen name="card_elevation">3dp</dimen>
+
+    <dimen name="food_item_card_height">40dp</dimen>
 </resources>

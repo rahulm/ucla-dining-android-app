@@ -54,4 +54,21 @@ public class TypefaceUtil {
         }
         return tf;
     }
+
+
+    public static Typeface getRegular(Context context) {
+        return get("fonts/Arvo/Arvo-Regular.ttf", context);
+    }
+
+    public static Typeface getBold(Context context) {
+        return get("fonts/Arvo/Arvo-Bold.ttf", context);
+    }
+
+    public static Typeface getItalic(Context context) {
+        return get("fonts/Arvo/Arvo-Italic.ttf", context);
+    }
+
+    public static Typeface getBoldItalic(Context context) {
+        return get("fonts/Arvo/Arvo-BoldItalic.ttf", context);
+    }
 }

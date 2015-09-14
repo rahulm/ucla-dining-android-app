@@ -2,7 +2,10 @@ package com.maninbrown.ucladining;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -31,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton mBackButton;
     private ImageButton mRefreshButton;
     private TextView mTitleView;
+    private FloatingActionButton mOptionsButton;
 
 
     // Main content stuff
@@ -53,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (mCurrFragment==null || (mCurrFragment instanceof HomeOptionsPage)) {
+        if (mCurrFragment == null || (mCurrFragment instanceof HomeOptionsPage)) {
             finish();
         } else {
             super.onBackPressed();
@@ -87,13 +91,15 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 //                Toast.makeText(MainActivity.this, "Refresh pressed", Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "Refresh pressed!");
-                if (mCurrFragment!=null) mCurrFragment.doRefresh(null);
+                if (mCurrFragment != null) mCurrFragment.doRefresh(null);
             }
         });
 
         mTitleView = (TextView) mToolbar.findViewById(R.id.custom_toolbar_title);
         Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/Arvo/Arvo-BoldItalic.ttf");
         mTitleView.setTypeface(typeface);
+
+        mOptionsButton = (FloatingActionButton) mToolbar.findViewById(R.id.main_button_options);
     }
 
     /**
@@ -119,18 +125,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showFragment(BaseFragment fragment) {
-        if (fragment!=null) {
-            mCurrFragment = fragment;
+        if (fragment != null) {
+//            mCurrFragment = fragment;
 
             // TODO: testing slide in animation
-            getSupportFragmentManager()
-                    .beginTransaction()
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction
                     .add(R.id.main_content, fragment)
                     .setCustomAnimations(R.anim.slide_in_right, 0)
-                    .show(fragment)
-                    .addToBackStack(null)
+                    .show(fragment);
+
+            if (mCurrFragment != null) {
+                transaction.remove(mCurrFragment);
+            }
+            transaction.addToBackStack(null)
                     .commit();
 
+            mCurrFragment = fragment;
 //            getSupportFragmentManager()
 //                    .beginTransaction()
 //                    .replace(R.id.main_content, mCurrFragment)
@@ -143,14 +154,14 @@ public class MainActivity extends AppCompatActivity {
     // Toolbar controls
 
     public void setToolbarTitle(String title) {
-        if (mTitleView!=null) {
+        if (mTitleView != null) {
             mTitleView.setText(title);
             mTitleView.setVisibility(View.VISIBLE);
         }
     }
 
     public void setToolbarTitleVisibility(int visibility) {
-        if (mTitleView!=null) {
+        if (mTitleView != null) {
             try {
                 mTitleView.setVisibility(visibility);
             } catch (Exception e) {
@@ -163,10 +174,10 @@ public class MainActivity extends AppCompatActivity {
     /**
      * This toggles the refresh button to be visible and clickable if isOn is true, and invisible and not clickable if false.
      *
-     * @param isOn      Turns refresh button on if true, and off if false.
+     * @param isOn Turns refresh button on if true, and off if false.
      */
     public void toggleRefreshButton(boolean isOn) {
-        if (mRefreshButton!=null) {
+        if (mRefreshButton != null) {
             if (isOn) {
                 mRefreshButton.setVisibility(View.VISIBLE);
                 mRefreshButton.setClickable(true);
@@ -181,10 +192,10 @@ public class MainActivity extends AppCompatActivity {
     /**
      * This toggles the back button to be visible and clickable if isOn is true, and invisible and not clickable if false.
      *
-     * @param isOn      Turns back button on if true, and off if false.
+     * @param isOn Turns back button on if true, and off if false.
      */
     public void toggleBackButton(boolean isOn) {
-        if (mBackButton!=null) {
+        if (mBackButton != null) {
             if (isOn) {
                 mBackButton.setVisibility(View.VISIBLE);
                 mBackButton.setClickable(true);
@@ -195,5 +206,29 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    /**
+     * This toggles the options button to be visible and clickable if isOn is true, and invisible and not clickable if false.
+     *
+     * @param isOn            Turns options button on if true, and off if false.
+     * @param onClickListener {@link android.view.View.OnClickListener} to apply, if any; can be null.
+     */
+    public void toggleOptionsButton(boolean isOn, @Nullable View.OnClickListener onClickListener) {
+        if (mOptionsButton != null) {
+            if (isOn) {
+                mOptionsButton.setVisibility(View.VISIBLE);
+                mOptionsButton.setClickable(true);
+            } else {
+                mOptionsButton.setClickable(false);
+                mOptionsButton.setVisibility(View.INVISIBLE);
+            }
+            if (onClickListener == null) {
+                mOptionsButton.setClickable(false);
+            } else {
+                mOptionsButton.setOnClickListener(onClickListener);
+                mOptionsButton.setClickable(true);
+            }
+        }
+    }
 
 }
