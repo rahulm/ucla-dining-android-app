@@ -220,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
                 mOptionsButton.setClickable(true);
             } else {
                 mOptionsButton.setClickable(false);
-                mOptionsButton.setVisibility(View.INVISIBLE);
+                mOptionsButton.setVisibility(View.GONE);
             }
             if (onClickListener == null) {
                 mOptionsButton.setClickable(false);

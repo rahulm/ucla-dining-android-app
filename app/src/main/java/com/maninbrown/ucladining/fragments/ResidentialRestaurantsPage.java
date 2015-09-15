@@ -1,6 +1,5 @@
 package com.maninbrown.ucladining.fragments;
 
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.maninbrown.ucladining.R;
+import com.maninbrown.ucladining.util.DebugUtils;
 import com.maninbrown.ucladining.util.TypefaceUtil;
 
 import java.util.ArrayList;
@@ -40,20 +40,21 @@ public class ResidentialRestaurantsPage extends BaseFragment {
 
     @Override
     public void doRefresh(final RefreshListener refreshListener) {
-        Log.d(TAG, "doRefresh reached begin");
+        logDebug("doRefresh reached begin");
 
         // TODO: refresh if not already refreshing
         if (!isLayoutRefreshing()) {
-            Log.d(TAG, "doRefresh trying to show refresh");
+            logDebug("doRefresh trying to show refresh icon");
             showSwipeRefresh();
         }
 
         if (!isRefreshing) {
-            Log.d(TAG, "doRefresh attempting refresh");
+            logDebug("doRefresh attempting refresh");
             isRefreshing = true;
             DiningAPI.getResidentialRestaurantsPage(new OnCompleteListener() {
                 @Override
                 public void onComplete() {
+                    logDebug("onComplete reached");
                     hideSwipeRefresh();
                     isRefreshing = false;
                     if (refreshListener != null) refreshListener.OnRefreshComplete();
@@ -61,6 +62,7 @@ public class ResidentialRestaurantsPage extends BaseFragment {
             }, new OnSuccessListener() {
                 @Override
                 public void onSuccess(BaseModel baseModel) {
+                    logDebug("onSuccess reached");
                     if (baseModel instanceof SectionList) {
                         mSectionList = (SectionList) baseModel;
                         parseAndPopulateList();
@@ -78,7 +80,7 @@ public class ResidentialRestaurantsPage extends BaseFragment {
                 }
             });
         }
-        Log.d(TAG, "doRefresh reached end");
+        logDebug("doRefresh reached end");
     }
 
     @Override
@@ -87,24 +89,26 @@ public class ResidentialRestaurantsPage extends BaseFragment {
         setToolbarTitle("Residential Restaurants");
         setRefreshButtonIsOn(true);
         setBackButtonOn(true);
-//        setOptionsButtonIsOn(true, new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Toast.makeText(getActivity(), "Option button pressed", Toast.LENGTH_SHORT).show();
-//            }
-//        });
+        setOptionsButtonIsOn(true, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity(), "Option button pressed", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         setLayoutId(R.layout.generic_refreshable_list_page);
     }
 
     @Override
     protected void populateRootView() {
+        logDebug("populateRootView reached begin");
         // TODO:
         doRefresh(null);
 //        parseAndPopulateList();
     }
 
     private void parseAndPopulateList() {
+        logDebug("parseAndPopulateList reached begin");
         if (mSectionList == null) {
             Log.e(TAG, "parseAndPopulateList section list is null!");
             setRecyclerAdapter(null);
@@ -118,6 +122,7 @@ public class ResidentialRestaurantsPage extends BaseFragment {
     public static class RestaurantsPageSectionHolder extends RecyclerView.ViewHolder {
         public CardView restaurantHeaderCard;
         public TextView restaurantName;
+        public TextView restaurantFullMenuText;
 
         public CardView restaurantMenuCard;
         public LinearLayout restaurantMenuList;
@@ -126,6 +131,7 @@ public class ResidentialRestaurantsPage extends BaseFragment {
             super(item);
             restaurantHeaderCard = (CardView) item.findViewById(R.id.restaurant_card_restaurant_card);
             restaurantName = (TextView) restaurantHeaderCard.findViewById(R.id.restaurant_card_name);
+            restaurantFullMenuText = (TextView) restaurantHeaderCard.findViewById(R.id.restaurant_card_full_menu);
 
             restaurantMenuCard = (CardView) item.findViewById(R.id.restaurant_card_menu_card);
             restaurantMenuList = (LinearLayout) restaurantMenuCard.findViewById(R.id.restaurant_card_menu_list);
@@ -168,7 +174,6 @@ public class ResidentialRestaurantsPage extends BaseFragment {
             layout.setVisibility(View.VISIBLE);
             layout.removeAllViews();
             layout.removeAllViewsInLayout();
-            layout.setDividerPadding(10);
 
             if (sectionItems==null || sectionItems.isEmpty()) {
                 holder.restaurantMenuCard.setVisibility(View.GONE);

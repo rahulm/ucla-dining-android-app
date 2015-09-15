@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.maninbrown.ucladining.MainActivity;
 import com.maninbrown.ucladining.R;
+import com.maninbrown.ucladining.util.DebugUtils;
 
 /**
  * Base fragment.
@@ -27,6 +28,10 @@ import com.maninbrown.ucladining.R;
  */
 public abstract class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = "BaseFragment";
+
+    protected static void logDebug(String message) {
+        DebugUtils.logDebug(TAG, message);
+    }
 
     private View mRootView;
 
@@ -153,14 +158,16 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
     }
 
     protected boolean isLayoutRefreshing() {
+        logDebug("isLayoutRefreshing reached");
         return mSwipeRefreshLayout != null && mSwipeRefreshLayout.isRefreshing();
     }
 
     protected void hideSwipeRefresh() {
+        logDebug("hideSwipeRefresh reached");
         getMainActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (mSwipeRefreshLayout != null) {
+                if (mSwipeRefreshLayout != null && mSwipeRefreshLayout.isRefreshing()) {
                     mSwipeRefreshLayout.setRefreshing(false);
                 }
             }
@@ -168,10 +175,11 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
     }
 
     protected void showSwipeRefresh() {
+        logDebug("showSwipeRefresh reached");
         getMainActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (mSwipeRefreshLayout != null) {
+                if (mSwipeRefreshLayout != null && !mSwipeRefreshLayout.isRefreshing()) {
                     mSwipeRefreshLayout.setRefreshing(true);
                 }
             }
@@ -241,7 +249,7 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
             @Override
             public void run() {
                 if (mRecyclerViewLayout != null) {
-                    if (adapter==null) {
+                    if (adapter == null) {
                         mRecyclerViewLayout.setVisibility(View.INVISIBLE);
                         mEmptyView.setVisibility(View.VISIBLE);
                     } else {
@@ -263,10 +271,10 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
         getMainActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (mRootView!=null) {
+                if (mRootView != null) {
                     mEmptyView = (CardView) mRootView.findViewById(R.id.shared_empty_view_card);
                     TextView textView = (TextView) mEmptyView.findViewById(R.id.shared_empty_view_text);
-                    if (mBoldItalicTypeface==null) {
+                    if (mBoldItalicTypeface == null) {
                         mBoldItalicTypeface = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Arvo/Arvo-BoldItalic.ttf");
                     }
                     textView.setTypeface(mBoldItalicTypeface);
