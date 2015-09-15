@@ -18,6 +18,7 @@ import com.maninbrown.ucladining.util.TypefaceUtil;
 import java.util.ArrayList;
 
 import api.DiningAPI;
+import api.DiningAPIEndpoints;
 import models.BaseModel;
 import models.RateableItem;
 import models.Section;
@@ -31,7 +32,7 @@ import util.diningAPICallbacks.OnSuccessListener;
  * Created by Rahul on 9/13/2015.
  */
 public class ResidentialRestaurantsPage extends BaseFragment {
-    private static final String TAG = "ResRestaurantsPage";
+    protected static final String TAG = "ResRestaurantsPage";
 
     private boolean isRefreshing = false;
 
@@ -41,21 +42,21 @@ public class ResidentialRestaurantsPage extends BaseFragment {
     public void doRefresh(final RefreshListener refreshListener) {
         logDebug("doRefresh reached begin");
 
-        // TODO: refresh if not already refreshing
-        if (!isLayoutRefreshing()) {
-            logDebug("doRefresh trying to show refresh icon");
-            showSwipeRefresh();
-        }
-
         if (!isRefreshing) {
             logDebug("doRefresh attempting refresh");
             isRefreshing = true;
+
+            // TODO: refresh if not already refreshing
+            if (!isLayoutRefreshing()) {
+                logDebug("doRefresh trying to show refresh icon");
+                showSwipeRefresh();
+            }
             DiningAPI.getResidentialRestaurantsPage(new OnCompleteListener() {
                 @Override
                 public void onComplete() {
                     logDebug("onComplete reached");
-                    hideSwipeRefresh();
                     isRefreshing = false;
+                    hideSwipeRefresh();
                     if (refreshListener != null) refreshListener.OnRefreshComplete();
                 }
             }, new OnSuccessListener() {
@@ -68,11 +69,14 @@ public class ResidentialRestaurantsPage extends BaseFragment {
                     } else {
                         Log.e(TAG, "onSuccess BaseModel isn't a SectionList");
                         setRecyclerAdapter(null);
+                        hideSwipeRefresh();
                     }
+//                    hideSwipeRefresh();
                 }
             }, new OnFailureListener() {
                 @Override
                 public void onFailure() {
+                    hideSwipeRefresh();
                     Log.e(TAG, "onFailure reached for residential restaurants call");
                     Toast.makeText(getActivity(), "Uh oh, there was a problem refreshing! Please try again!", Toast.LENGTH_SHORT).show();
                     setRecyclerAdapter(null);
@@ -101,7 +105,6 @@ public class ResidentialRestaurantsPage extends BaseFragment {
     @Override
     protected void populateRootView() {
         logDebug("populateRootView reached begin");
-        // TODO:
         doRefresh(null);
 //        parseAndPopulateList();
     }
@@ -115,6 +118,14 @@ public class ResidentialRestaurantsPage extends BaseFragment {
             RecyclerView.Adapter adapter = (mSectionList.getSections() == null) ? null : new ResidentialRestaurantsAdapter(mSectionList.getSections());
             setRecyclerAdapter(adapter);
         }
+    }
+
+    private void openFullMenuPage(String restaurant) {
+        Bundle bundle = new Bundle();
+        bundle.putString(DiningAPIEndpoints.PARAM_KEY_RESTAURANT, restaurant);
+        BaseFragment fragment = new ResidentialRestaurantMenuPage();
+        fragment.setArguments(bundle);
+        getMainActivity().showFragment(fragment);
     }
 
 
@@ -159,8 +170,9 @@ public class ResidentialRestaurantsPage extends BaseFragment {
             holder.restaurantHeaderCard.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(getActivity(), section.getRestaurantName() + " clicked.", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getActivity(), section.getRestaurantName() + " clicked.", Toast.LENGTH_SHORT).show();
                     // TODO: open next full menu fragment with correct restaurant
+                    openFullMenuPage(section.getRestaurantName());
                 }
             });
             holder.restaurantHeaderCard.setClickable(true);
@@ -168,14 +180,14 @@ public class ResidentialRestaurantsPage extends BaseFragment {
 
             ArrayList<SectionItem> sectionItems = section.getSectionItems();
             LinearLayout layout = holder.restaurantMenuList;
-            if (layout==null) {
+            if (layout == null) {
                 Log.e(TAG, "onBindViewHolder linear layout is null");
             }
             layout.setVisibility(View.VISIBLE);
             layout.removeAllViews();
             layout.removeAllViewsInLayout();
 
-            if (sectionItems==null || sectionItems.isEmpty()) {
+            if (sectionItems == null || sectionItems.isEmpty()) {
                 holder.restaurantMenuCard.setVisibility(View.GONE);
             } else {
                 holder.restaurantMenuCard.setVisibility(View.VISIBLE);
@@ -189,7 +201,8 @@ public class ResidentialRestaurantsPage extends BaseFragment {
                                 Toast.makeText(getActivity(), rateableItem.getItemName() + " clicked.", Toast.LENGTH_SHORT).show();
                                 // TODO: open the right nutrition pop up
                             }
-                        }); rootView.setClickable(true);
+                        });
+                        rootView.setClickable(true);
 
                         TextView titleText = ((TextView) rootView.findViewById(R.id.food_item_name));
                         titleText.setText(rateableItem.getItemName());
@@ -197,15 +210,17 @@ public class ResidentialRestaurantsPage extends BaseFragment {
 
                         TextView subText = (TextView) rootView.findViewById(R.id.food_item_subtitle);
                         String details = rateableItem.getItemDescription();
-                        if (details==null || details.isEmpty()) {
-                            subText.setText(""); subText.setVisibility(View.GONE);
+                        if (details == null || details.isEmpty()) {
+                            subText.setText("");
+                            subText.setVisibility(View.GONE);
                         } else {
-                            subText.setVisibility(View.VISIBLE); subText.setText(details);
+                            subText.setVisibility(View.VISIBLE);
+                            subText.setText(details);
                             subText.setTypeface(TypefaceUtil.getItalic(getActivity()));
                         }
 
                         ViewParent parent = rootView.getParent();
-                        if (parent!=null) {
+                        if (parent != null) {
                             ((ViewGroup) parent).removeView(rootView);
                         }
                         layout.addView(rootView);
@@ -219,18 +234,4 @@ public class ResidentialRestaurantsPage extends BaseFragment {
             return (mSections == null) ? 0 : mSections.size();
         }
     }
-
-
-    //    @Nullable
-//    @Override
-//    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-//        //return super.onCreateView(inflater, container, savedInstanceState);
-//
-//        SwipeRefreshLayout layout = (SwipeRefreshLayout) inflater.inflate(R.layout.res_restaurants_list_page, null, false);
-//        setRootView(layout);
-//
-//
-//
-//        return getRootView();
-//    }
 }

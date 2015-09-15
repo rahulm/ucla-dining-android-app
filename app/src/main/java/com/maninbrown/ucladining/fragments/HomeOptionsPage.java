@@ -24,7 +24,7 @@ import models.DiningServiceModel;
  */
 public class HomeOptionsPage extends BaseFragment {
 
-    private static final String TAG = "HomeOptionsPage";
+    protected static final String TAG = "HomeOptionsPage";
 
     private static Typeface mTypeface;
 

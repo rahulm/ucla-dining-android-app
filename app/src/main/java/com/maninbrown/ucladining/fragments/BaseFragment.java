@@ -27,7 +27,7 @@ import com.maninbrown.ucladining.util.DebugUtils;
  * Created by Rahul on 9/13/2015.
  */
 public abstract class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
-    private static final String TAG = "BaseFragment";
+    protected static final String TAG = "BaseFragment";
 
     protected static void logDebug(String message) {
         DebugUtils.logDebug(TAG, message);
@@ -168,7 +168,13 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
             @Override
             public void run() {
                 if (mSwipeRefreshLayout != null && mSwipeRefreshLayout.isRefreshing()) {
-                    mSwipeRefreshLayout.setRefreshing(false);
+                    mSwipeRefreshLayout.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            logDebug("run attempting to set refresh to false");
+                            mSwipeRefreshLayout.setRefreshing(false);
+                        }
+                    });
                 }
             }
         });
@@ -180,7 +186,13 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
             @Override
             public void run() {
                 if (mSwipeRefreshLayout != null && !mSwipeRefreshLayout.isRefreshing()) {
-                    mSwipeRefreshLayout.setRefreshing(true);
+                    mSwipeRefreshLayout.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            logDebug("run attempting to set refresh to true");
+                            mSwipeRefreshLayout.setRefreshing(true);
+                        }
+                    });
                 }
             }
         });
