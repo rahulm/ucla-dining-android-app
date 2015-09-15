@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.maninbrown.ucladining.R;
+import com.maninbrown.ucladining.util.FoodItemUtils;
 import com.maninbrown.ucladining.util.TypefaceUtil;
 
 import java.util.ArrayList;
@@ -163,8 +164,15 @@ public class QuickServiceMenuPage extends BaseFragment {
                         rootView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                Toast.makeText(getActivity(), rateableItem.getItemName() + " clicked.", Toast.LENGTH_SHORT).show();
-                                // TODO: open the right nutrition pop up
+//                                Toast.makeText(getActivity(), rateableItem.getItemName() + " clicked.", Toast.LENGTH_SHORT).show();
+                                // open the right nutrition pop up
+                                showSwipeRefresh();
+                                FoodItemUtils.openInfoPopupForFoodItem(rateableItem, getActivity(), new OnCompleteListener() {
+                                    @Override
+                                    public void onComplete() {
+                                        hideSwipeRefresh();
+                                    }
+                                }, null, null);
                             }
                         });
                         rootView.setClickable(true);

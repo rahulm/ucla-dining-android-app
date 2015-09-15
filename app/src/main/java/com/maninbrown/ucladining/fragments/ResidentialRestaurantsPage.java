@@ -200,8 +200,8 @@ public class ResidentialRestaurantsPage extends BaseFragment {
                         rootView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                Toast.makeText(getActivity(), rateableItem.getItemName() + " clicked.", Toast.LENGTH_SHORT).show();
-                                // TODO: open the right nutrition pop up
+//                                Toast.makeText(getActivity(), rateableItem.getItemName() + " clicked.", Toast.LENGTH_SHORT).show();
+                                //  open the right nutrition pop up
                                 rootView.setClickable(false);
                                 showSwipeRefresh();
                                 FoodItemUtils.openInfoPopupForFoodItem(rateableItem, getActivity(), new OnCompleteListener() {
@@ -210,12 +210,7 @@ public class ResidentialRestaurantsPage extends BaseFragment {
                                         rootView.setClickable(true);
                                         hideSwipeRefresh();
                                     }
-                                }, null, new OnFailureListener() {
-                                    @Override
-                                    public void onFailure() {
-                                        Toast.makeText(getActivity(), "Uh oh, something went wrong! Please try again later.", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
+                                },null ,null);
                             }
                         });
                         rootView.setClickable(true);

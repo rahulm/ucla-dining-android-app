@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.maninbrown.ucladining.R;
+import com.maninbrown.ucladining.util.FoodItemUtils;
 import com.maninbrown.ucladining.util.TypefaceUtil;
 
 import java.util.ArrayList;
@@ -149,8 +150,15 @@ public class ResidentialRestaurantMenuPage extends BaseFragment {
                 holder.cardView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(getActivity(), "food item clicked: " + rateableItem.getItemName(), Toast.LENGTH_SHORT).show();
-                        // TODO: open the correct nutrition info pop up
+//                        Toast.makeText(getActivity(), "food item clicked: " + rateableItem.getItemName(), Toast.LENGTH_SHORT).show();
+                        // open the correct nutrition info pop up
+                        showSwipeRefresh();
+                        FoodItemUtils.openInfoPopupForFoodItem(rateableItem, getActivity(), new OnCompleteListener() {
+                            @Override
+                            public void onComplete() {
+                                hideSwipeRefresh();
+                            }
+                        }, null, null);
                     }
                 });
 

@@ -109,7 +109,7 @@ public class HomeOptionsPage extends BaseFragment {
                 @Override
                 public void onClick(View v) {
 //                    Toast.makeText(getActivity(), "card view clicked for: " + name, Toast.LENGTH_SHORT).show();
-                    // TODO: open next fragment as appropriate
+                    // open next fragment as appropriate
                     switch (position) {
                         case 0:
                             getMainActivity().showFragment(new ResidentialRestaurantsPage());

@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.maninbrown.ucladining.fragments.BaseFragment;
 import com.maninbrown.ucladining.fragments.HomeOptionsPage;
+import com.maninbrown.ucladining.util.FoodItemUtils;
 
 
 /**
@@ -56,9 +57,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (mCurrFragment == null || (mCurrFragment instanceof HomeOptionsPage)) {
+        if (FoodItemUtils.popUpWindowIsShowing) {
+            FoodItemUtils.dismissPopUp();
+        } else if (mCurrFragment == null || (mCurrFragment instanceof HomeOptionsPage)) {
             finish();
-        } else {
+        } else if (!mCurrFragment.isLayoutRefreshing()){
             super.onBackPressed();
         }
     }

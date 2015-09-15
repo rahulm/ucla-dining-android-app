@@ -32,6 +32,10 @@ public class FoodItemUtils {
     }
 
 
+    public static boolean popUpWindowIsShowing = false;
+
+    private static PopupWindow mPopUpWindow;
+
     private static boolean isConnecting = false;
 
     private static void doFailure(OnCompleteListener onCompleteListener, OnFailureListener onFailureListener) {
@@ -50,7 +54,7 @@ public class FoodItemUtils {
             onSuccessListener.onSuccess(baseModel);
     }
 
-    public static void openInfoPopupForFoodItem(RateableItem rateableItem, final Activity activity,
+    public static void openInfoPopupForFoodItem(final RateableItem rateableItem, final Activity activity,
                                                 final OnCompleteListener onCompleteListener,
                                                 final OnSuccessListener onSuccessListener,
                                                 final OnFailureListener onFailureListener) {
@@ -64,6 +68,7 @@ public class FoodItemUtils {
             Toast.makeText(activity, "Sorry, something went wrong! Please try again later.", Toast.LENGTH_SHORT).show();
             doFailure(onCompleteListener, onFailureListener);
         } else {
+            logDebug("food item info url " + rateableItem.getTargetURL());
             DiningAPI.getNutritionInfo(rateableItem, new OnCompleteListener() {
                 @Override
                 public void onComplete() {
@@ -78,7 +83,16 @@ public class FoodItemUtils {
             }, new OnFailureListener() {
                 @Override
                 public void onFailure() {
-                    doFailure(onCompleteListener, onFailureListener);
+                    FoodItemInfo itemInfo = new FoodItemInfo(rateableItem, null, null);
+                    showFoodItemInfoPopup(itemInfo, activity);
+                    doSuccess(itemInfo, onCompleteListener, onSuccessListener);
+//                    activity.runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            Toast.makeText(activity, "Uh oh, something went wrong! Please try again later.", Toast.LENGTH_SHORT).show();
+//                        }
+//                    });
+//                    doFailure(onCompleteListener, onFailureListener);
                 }
             });
         }
@@ -102,6 +116,7 @@ public class FoodItemUtils {
                 if (details != null && !details.isEmpty()) {
                     textView.setText(details);
                     textView.setVisibility(View.VISIBLE);
+                    textView.setTypeface(TypefaceUtil.getItalic(activity));
                 } else {
                     textView.setVisibility(View.GONE);
                 }
@@ -111,32 +126,54 @@ public class FoodItemUtils {
                 String ingredients = foodItemInfo.getIngredientsList();
                 if (ingredients != null && !ingredients.isEmpty()) {
                     textView.setText(ingredients);
+                    textView.setTypeface(TypefaceUtil.getItalic(activity));
                     cardView.setVisibility(View.VISIBLE);
                 } else {
-                    cardView.setVisibility(View.GONE);
+                    textView.setText("No ingredient info to display :(");
+                    textView.setTypeface(TypefaceUtil.getItalic(activity));
+                    cardView.setVisibility(View.VISIBLE);
                 }
 
                 WebView webView = (WebView) rootView.findViewById(R.id.food_item_info_nutrition_view);
-//        webView.getSettings().setJavaScriptEnabled(true);
-                webView.loadData(foodItemInfo.getNutritionFactsHTML(), "text/html", "UTF-8");
+                String nutritionHTML = foodItemInfo.getNutritionFactsHTML();
+                if (nutritionHTML!=null && !nutritionHTML.isEmpty()) {
+                    webView.setVisibility(View.VISIBLE);
+                    webView.getSettings().setJavaScriptEnabled(true);
+                    webView.loadData(foodItemInfo.getNutritionFactsHTML(), "text/html", "UTF-8");
+                    logDebug("webview html: " + foodItemInfo.getNutritionFactsHTML());
+                } else {
+                    webView.setVisibility(View.GONE);
+                }
 
-
-                final PopupWindow popupWindow = new PopupWindow(rootView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                mPopUpWindow = new PopupWindow(rootView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
                 (rootView.findViewById(R.id.food_item_info_background_space)).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (popupWindow.isShowing()) popupWindow.dismiss();
+                        if (mPopUpWindow.isShowing()) mPopUpWindow.dismiss();
                     }
                 });
 
-                popupWindow.setContentView(rootView);
-                popupWindow.setOutsideTouchable(true);
-                popupWindow.setFocusable(true);
-                popupWindow.showAtLocation(rootView, Gravity.CENTER, 0, 0);
-
+                mPopUpWindow.setContentView(rootView);
+//                mPopUpWindow.setOutsideTouchable(true);
+//                mPopUpWindow.setFocusable(true);
+                mPopUpWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                    @Override
+                    public void onDismiss() {
+                        popUpWindowIsShowing = false;
+                    }
+                });
+                mPopUpWindow.showAtLocation(rootView, Gravity.CENTER, 0, 0);
+                popUpWindowIsShowing = true;
                 // TODO: set content view and show
             }
         });
+    }
+
+    public static void dismissPopUp() {
+        if (mPopUpWindow != null && mPopUpWindow.isShowing()) {
+            mPopUpWindow.dismiss();
+            popUpWindowIsShowing = false;
+        }
     }
 }

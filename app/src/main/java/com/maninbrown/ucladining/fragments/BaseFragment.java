@@ -152,7 +152,7 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
      */
     @Override
     public void onRefresh() {
-        showSwipeRefresh(); // TODO: check if this should be here
+        showSwipeRefresh();
         doRefresh(new RefreshListener() {
             @Override
             public void OnRefreshComplete() {
@@ -161,7 +161,7 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
         });
     }
 
-    protected boolean isLayoutRefreshing() {
+    public boolean isLayoutRefreshing() {
         logDebug("isLayoutRefreshing reached");
         return mSwipeRefreshLayout != null && mSwipeRefreshLayout.isRefreshing();
     }
