@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.maninbrown.ucladining.R;
 import com.maninbrown.ucladining.util.TypefaceUtil;
@@ -129,7 +128,7 @@ public class QuickServiceRestaurantsListPage extends BaseFragment {
                 holder.cardView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(getActivity(), rateableItem.getItemName() + " clicked", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getActivity(), rateableItem.getItemName() + " clicked", Toast.LENGTH_SHORT).show();
                         openMenuPage(rateableItem);
                     }
                 });

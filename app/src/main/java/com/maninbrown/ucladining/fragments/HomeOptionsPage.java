@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.maninbrown.ucladining.R;
 
@@ -63,7 +62,8 @@ public class HomeOptionsPage extends BaseFragment {
             mTypeface = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Arvo/Arvo-Bold.ttf");
         }
         if (mDiningServiceModels==null || mDiningServiceModels.isEmpty()) {
-            Toast.makeText(getActivity(), "Dining Service models list is null!", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getActivity(), "Dining Service models list is null!", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "populateRootView dining service models list is null");
         }
         setRecyclerAdapter(new OptionsRecyclerAdapter(mDiningServiceModels));
 
@@ -108,7 +108,7 @@ public class HomeOptionsPage extends BaseFragment {
             holder.cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(getActivity(), "card view clicked for: " + name, Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getActivity(), "card view clicked for: " + name, Toast.LENGTH_SHORT).show();
                     // TODO: open next fragment as appropriate
                     switch (position) {
                         case 0:

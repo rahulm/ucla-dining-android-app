@@ -78,7 +78,7 @@ public class ResidentialRestaurantsPage extends BaseFragment {
                 public void onFailure() {
                     hideSwipeRefresh();
                     Log.e(TAG, "onFailure reached for residential restaurants call");
-                    Toast.makeText(getActivity(), "Uh oh, there was a problem refreshing! Please try again!", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getActivity(), "Uh oh, there was a problem refreshing! Please try again!", Toast.LENGTH_SHORT).show();
                     setRecyclerAdapter(null);
                 }
             });
@@ -96,6 +96,7 @@ public class ResidentialRestaurantsPage extends BaseFragment {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getActivity(), "Option button pressed", Toast.LENGTH_SHORT).show();
+                // TODO: something
             }
         });
 
