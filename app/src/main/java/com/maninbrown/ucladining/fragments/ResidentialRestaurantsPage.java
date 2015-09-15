@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.maninbrown.ucladining.R;
+import com.maninbrown.ucladining.util.FoodItemUtils;
 import com.maninbrown.ucladining.util.TypefaceUtil;
 
 import java.util.ArrayList;
@@ -195,12 +196,26 @@ public class ResidentialRestaurantsPage extends BaseFragment {
                 for (SectionItem item : sectionItems) {
                     if (item instanceof RateableItem) {
                         final RateableItem rateableItem = (RateableItem) item;
-                        View rootView = getActivity().getLayoutInflater().inflate(R.layout.food_item_card_layout, null, false);
+                        final View rootView = getActivity().getLayoutInflater().inflate(R.layout.food_item_card_layout, null, false);
                         rootView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 Toast.makeText(getActivity(), rateableItem.getItemName() + " clicked.", Toast.LENGTH_SHORT).show();
                                 // TODO: open the right nutrition pop up
+                                rootView.setClickable(false);
+                                showSwipeRefresh();
+                                FoodItemUtils.openInfoPopupForFoodItem(rateableItem, getActivity(), new OnCompleteListener() {
+                                    @Override
+                                    public void onComplete() {
+                                        rootView.setClickable(true);
+                                        hideSwipeRefresh();
+                                    }
+                                }, null, new OnFailureListener() {
+                                    @Override
+                                    public void onFailure() {
+                                        Toast.makeText(getActivity(), "Uh oh, something went wrong! Please try again later.", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
                             }
                         });
                         rootView.setClickable(true);

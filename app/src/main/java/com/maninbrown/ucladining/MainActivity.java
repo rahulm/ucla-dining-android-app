@@ -13,7 +13,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.maninbrown.ucladining.fragments.BaseFragment;
 import com.maninbrown.ucladining.fragments.HomeOptionsPage;
@@ -80,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "Back pressed", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(MainActivity.this, "Back pressed", Toast.LENGTH_SHORT).show();
                 onBackPressed();
             }
         });
