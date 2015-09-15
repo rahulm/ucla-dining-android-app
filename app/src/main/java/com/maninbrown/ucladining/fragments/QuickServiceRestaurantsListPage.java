@@ -17,6 +17,7 @@ import com.maninbrown.ucladining.util.TypefaceUtil;
 import java.util.ArrayList;
 
 import api.DiningAPI;
+import api.DiningAPIEndpoints;
 import models.BaseModel;
 import models.RateableItem;
 import models.Section;
@@ -84,6 +85,14 @@ public class QuickServiceRestaurantsListPage extends BaseFragment {
         setRecyclerAdapter((sectionItems == null) ? null : new QuickServiceRestaurantsPageAdapter(sectionItems));
     }
 
+    private void openMenuPage(RateableItem item) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(DiningAPIEndpoints.PARAM_KEY_RESTAURANT, item);
+        BaseFragment fragment = new QuickServiceMenuPage();
+        fragment.setArguments(bundle);
+        getMainActivity().showFragment(fragment);
+    }
+
     public static class QuickServiceRestaurantsViewHolder extends RecyclerView.ViewHolder {
         public CardView cardView;
         public TextView textView;
@@ -121,7 +130,7 @@ public class QuickServiceRestaurantsListPage extends BaseFragment {
                     @Override
                     public void onClick(View v) {
                         Toast.makeText(getActivity(), rateableItem.getItemName() + " clicked", Toast.LENGTH_SHORT).show();
-                        // TODO: go to correct quick service menu page
+                        openMenuPage(rateableItem);
                     }
                 });
             } else {
