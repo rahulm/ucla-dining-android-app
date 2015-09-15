@@ -40,6 +40,8 @@ public class ResidentialRestaurantsPage extends BaseFragment {
 
     @Override
     public void doRefresh(final RefreshListener refreshListener) {
+        Log.d(TAG, "doRefresh reached begin");
+
         // TODO: refresh if not already refreshing
         if (!isLayoutRefreshing()) {
             Log.d(TAG, "doRefresh trying to show refresh");
@@ -47,6 +49,7 @@ public class ResidentialRestaurantsPage extends BaseFragment {
         }
 
         if (!isRefreshing) {
+            Log.d(TAG, "doRefresh attempting refresh");
             isRefreshing = true;
             DiningAPI.getResidentialRestaurantsPage(new OnCompleteListener() {
                 @Override
@@ -75,7 +78,7 @@ public class ResidentialRestaurantsPage extends BaseFragment {
                 }
             });
         }
-
+        Log.d(TAG, "doRefresh reached end");
     }
 
     @Override
@@ -165,6 +168,7 @@ public class ResidentialRestaurantsPage extends BaseFragment {
             layout.setVisibility(View.VISIBLE);
             layout.removeAllViews();
             layout.removeAllViewsInLayout();
+            layout.setDividerPadding(10);
 
             if (sectionItems==null || sectionItems.isEmpty()) {
                 holder.restaurantMenuCard.setVisibility(View.GONE);

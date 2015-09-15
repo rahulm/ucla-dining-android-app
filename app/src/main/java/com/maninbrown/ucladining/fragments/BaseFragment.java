@@ -194,9 +194,9 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
                         mRecyclerViewLayout = (RecyclerView) mRootView.findViewById(R.id.shared_recycler_layout);
                     }
 
-                    if (mLayoutManager == null) {
-                        mLayoutManager = new LinearLayoutManager(getActivity());
-                    }
+//                    if (mLayoutManager == null) {
+//                        mLayoutManager = new LinearLayoutManager(getActivity());
+//                    }
                     if (mItemDecoration != null) {
                         if (mRecyclerViewLayout == null) {
                             Log.e(TAG, "findRecyclerView Recycler View is null!");
@@ -205,17 +205,19 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
                     } else {
                         mItemDecoration = new SimpleItemDecoration();
                     }
-                    if (mItemAnimator == null) {
-                        mItemAnimator = new DefaultItemAnimator();
-                    }
+//                    if (mItemAnimator == null) {
+//                        mItemAnimator = new DefaultItemAnimator();
+//                    }
 
-                    if (mRecyclerViewLayout.getLayoutManager()==null)
-                        mRecyclerViewLayout.setLayoutManager(mLayoutManager);
+//                    if (mRecyclerViewLayout.getLayoutManager()==null)
+//                        mRecyclerViewLayout.setLayoutManager(mLayoutManager);
+                    mRecyclerViewLayout.setLayoutManager(new LinearLayoutManager(getActivity()));
 
                     mRecyclerViewLayout.addItemDecoration(mItemDecoration);
 
-                    if (mRecyclerViewLayout.getItemAnimator()==null)
-                        mRecyclerViewLayout.setItemAnimator(mItemAnimator);
+//                    if (mRecyclerViewLayout.getItemAnimator()==null)
+//                        mRecyclerViewLayout.setItemAnimator(mItemAnimator);
+                    mRecyclerViewLayout.setItemAnimator(new DefaultItemAnimator());
 
                     mRecyclerViewLayout.setClickable(true);
                 }
