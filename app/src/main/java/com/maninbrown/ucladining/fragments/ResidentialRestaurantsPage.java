@@ -13,7 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.maninbrown.ucladining.R;
-import com.maninbrown.ucladining.util.DebugUtils;
 import com.maninbrown.ucladining.util.TypefaceUtil;
 
 import java.util.ArrayList;
@@ -165,6 +164,7 @@ public class ResidentialRestaurantsPage extends BaseFragment {
                 }
             });
             holder.restaurantHeaderCard.setClickable(true);
+            holder.restaurantFullMenuText.setTypeface(TypefaceUtil.getItalic(getActivity()));
 
             ArrayList<SectionItem> sectionItems = section.getSectionItems();
             LinearLayout layout = holder.restaurantMenuList;

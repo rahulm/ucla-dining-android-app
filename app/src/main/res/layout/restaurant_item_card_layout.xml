@@ -36,7 +36,8 @@
                     android:layout_weight="1"
                     android:text="Restaurant name"
                     android:typeface="sans"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:paddingLeft="5dp" />
 
                 <TextView
                     android:id="@+id/restaurant_card_full_menu"
@@ -61,16 +62,15 @@
             android:id="@+id/restaurant_card_menu_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             style="@style/DefaultCardView"
-            card_view:cardBackgroundColor="@color/card_top_highlight">
+            card_view:cardBackgroundColor="@color/card_top_highlight"
+            android:visibility="gone">
 
             <LinearLayout
                 android:id="@+id/restaurant_card_menu_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:background="#90ffffff"
                 android:orientation="vertical"
                 android:showDividers="middle"
                 android:dividerPadding="5dp">
