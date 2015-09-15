@@ -2,3 +2,4 @@
 git add -A
 git status
 git commit -m $Args[0]
+git status

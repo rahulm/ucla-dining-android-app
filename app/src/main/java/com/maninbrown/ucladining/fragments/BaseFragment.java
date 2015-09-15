@@ -27,10 +27,14 @@ import com.maninbrown.ucladining.util.DebugUtils;
  * Created by Rahul on 9/13/2015.
  */
 public abstract class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
-    protected static final String TAG = "BaseFragment";
+    protected static String TAG = "BaseFragment";
 
     protected static void logDebug(String message) {
-        DebugUtils.logDebug(TAG, message);
+        DebugUtils.logDebug(getTAG(), message);
+    }
+
+    public static String getTAG() {
+        return TAG;
     }
 
     private View mRootView;

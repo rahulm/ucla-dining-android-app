@@ -117,6 +117,9 @@ public class HomeOptionsPage extends BaseFragment {
                         case 1:
                             getMainActivity().showFragment(new QuickServiceRestaurantsListPage());
                             break;
+                        case 2:
+                            getMainActivity().showFragment(new RestaurantHoursPage());
+                            break;
                     }
                 }
             });

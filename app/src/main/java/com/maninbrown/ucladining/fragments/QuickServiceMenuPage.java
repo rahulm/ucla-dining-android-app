@@ -184,6 +184,8 @@ public class QuickServiceMenuPage extends BaseFragment {
                             subText.setTypeface(TypefaceUtil.getItalic(getActivity()));
                         }
 
+                        rootView.findViewById(R.id.food_item_right_button).setVisibility(View.VISIBLE);
+
                         ViewParent parent = rootView.getParent();
                         if (parent != null) {
                             ((ViewGroup) parent).removeView(rootView);
@@ -199,6 +201,13 @@ public class QuickServiceMenuPage extends BaseFragment {
                         titletext.setTypeface(TypefaceUtil.getRegular(getActivity()));
 
                         (rootView.findViewById(R.id.food_item_subtitle)).setVisibility(View.GONE);
+
+                        rootView.findViewById(R.id.food_item_right_button).setVisibility(View.GONE);
+
+                        if (infoItem.getInfoText()==null || infoItem.getInfoText().isEmpty()) {
+                            rootView.setVisibility(View.GONE);
+                            // TODO: look into this
+                        }
 
                         ViewParent parent = rootView.getParent();
                         if (parent != null) {
