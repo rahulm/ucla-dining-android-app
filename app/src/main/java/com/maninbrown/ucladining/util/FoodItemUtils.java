@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.PopupWindow;
+import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -146,23 +147,28 @@ public class FoodItemUtils {
                 }
 
                 mPopUpWindow = new PopupWindow(rootView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-
-                (rootView.findViewById(R.id.food_item_info_background_space)).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (mPopUpWindow.isShowing()) mPopUpWindow.dismiss();
-                    }
-                });
-
-                mPopUpWindow.setContentView(rootView);
-//                mPopUpWindow.setOutsideTouchable(true);
-//                mPopUpWindow.setFocusable(true);
                 mPopUpWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
                     @Override
                     public void onDismiss() {
                         popUpWindowIsShowing = false;
                     }
                 });
+                mPopUpWindow.setTouchable(true);
+
+                View space = (rootView.findViewById(R.id.food_item_info_background_space));
+                space.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mPopUpWindow.isShowing()) mPopUpWindow.dismiss();
+                    }
+                });
+                space.setClickable(true);
+
+
+                mPopUpWindow.setContentView(rootView);
+//                mPopUpWindow.setOutsideTouchable(true);
+//                mPopUpWindow.setFocusable(true);
+
                 mPopUpWindow.showAtLocation(rootView, Gravity.CENTER, 0, 0);
                 popUpWindowIsShowing = true;
                 // TODO: set content view and show
