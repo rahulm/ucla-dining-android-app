@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.maninbrown.ucladining.fragments.BaseFragment;
 import com.maninbrown.ucladining.fragments.HomeOptionsPage;
+import com.maninbrown.ucladining.util.DebugUtils;
 import com.maninbrown.ucladining.util.FoodItemUtils;
 
 
@@ -28,6 +29,10 @@ import com.maninbrown.ucladining.util.FoodItemUtils;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
+
+    private static void logDebug(String message) {
+        DebugUtils.logDebug(TAG, message);
+    }
 
     // Toolbar stuff
     private Toolbar mToolbar;
@@ -102,6 +107,9 @@ public class MainActivity extends AppCompatActivity {
         mTitleView.setTypeface(typeface);
 
         mOptionsButton = (FloatingActionButton) mToolbar.findViewById(R.id.main_button_options);
+        if (mOptionsButton==null) {
+            logDebug("setUpToolbar mOptionsButton is null");
+        }
     }
 
     /**
@@ -216,7 +224,10 @@ public class MainActivity extends AppCompatActivity {
      * @param onClickListener {@link android.view.View.OnClickListener} to apply, if any; can be null.
      */
     public void toggleOptionsButton(boolean isOn, @Nullable View.OnClickListener onClickListener) {
+        logDebug("toggleOptionsButton reached begin for isOn=" + isOn);
+
         if (mOptionsButton != null) {
+            logDebug("toggleOptionsButton options button is not null");
             if (isOn) {
                 mOptionsButton.setVisibility(View.VISIBLE);
                 mOptionsButton.setClickable(true);
