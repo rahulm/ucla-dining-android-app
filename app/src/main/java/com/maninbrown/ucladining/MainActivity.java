@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/Arvo/Arvo-BoldItalic.ttf");
         mTitleView.setTypeface(typeface);
 
-        mOptionsButton = (FloatingActionButton) mToolbar.findViewById(R.id.main_button_options);
+        mOptionsButton = (FloatingActionButton) findViewById(R.id.main_button_options);
         if (mOptionsButton==null) {
             logDebug("setUpToolbar mOptionsButton is null");
         }

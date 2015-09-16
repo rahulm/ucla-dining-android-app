@@ -303,63 +303,6 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-//        return super.onCreateView(inflater, container, savedInstanceState);
-//        if (mRootView==null) {
-//            mRootView = inflater.inflate(mLayoutId, container, false);
-//        } else {
-//            ((ViewGroup)mRootView.getParent()).removeView(mRootView);
-//        }
-//
-//        if (mSwipeRefreshLayout==null) {
-//            findSwipeRefreshLayout();
-//        } else {
-//            ((ViewGroup)mSwipeRefreshLayout.getParent()).removeView(mSwipeRefreshLayout);
-//        }
-//
-//        if (mRecyclerViewLayout==null) {
-//            findRecyclerView();
-//        } else {
-//            ((ViewGroup)mRecyclerViewLayout.getParent()).removeView(mRecyclerViewLayout);
-//        }
-//
-//        if (mEmptyView==null) {
-//            findEmptyView();
-//        } else {
-//            ((ViewGroup)mEmptyView.getParent()).removeView(mEmptyView);
-//        }
-
-//        if (mRootView!=null) {
-//            ViewParent parent = mRootView.getParent();
-//            if (parent!=null) {
-//                ((ViewGroup)parent).removeView(mRootView);
-//            }
-//        }
-//        if (mSwipeRefreshLayout!=null) {
-//            ViewParent parent = mSwipeRefreshLayout.getParent();
-//            if (parent!=null) {
-//                ((ViewGroup)parent).removeView(mSwipeRefreshLayout);
-//            }
-//        }
-//        if (mRecyclerViewLayout!=null) {
-//            ViewParent parent = mRecyclerViewLayout.getParent();
-//            if (parent!=null) {
-//                ((ViewGroup)parent).removeView(mRecyclerViewLayout);
-//            }
-//        }
-//        if (mEmptyView!=null) {
-//            ViewParent parent = mEmptyView.getParent();
-//            if (parent!=null) {
-//                ((ViewGroup)parent).removeView(mEmptyView);
-//            }
-//        }
-
-//        if (mRootView == null || mSwipeRefreshLayout == null || mRecyclerViewLayout == null || mEmptyView == null) {
-//            mRootView = inflater.inflate(mLayoutId, null, false);
-//            findSwipeRefreshLayout();
-//            findRecyclerView();
-//            findEmptyView();
-//        }
-
 
         mRootView = inflater.inflate(R.layout.generic_refreshable_list_page, null, false);
         findSwipeRefreshLayout();
