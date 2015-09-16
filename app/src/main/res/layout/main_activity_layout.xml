@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!--<android.support.design.widget.CoordinatorLayout-->
-<FrameLayout
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     >
+
+    <!--<FrameLayout-->
+
 
     <include layout="@layout/custom_toolbar_layout"/>
 
@@ -17,22 +20,48 @@
         android:id="@+id/main_content"
         android:layout_marginTop="@dimen/custom_toolbar_height" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#6b000000"
+        android:visibility="gone"
+        android:id="@+id/main_dim_view" />
+
+    <!--<com.cocosw.bottomsheet.ClosableSlidingLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/main_bottom_sheet"-->
+        <!--android:background="@color/ucla_light_blue"-->
+        <!--android:layout_gravity="bottom" />-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/main_bottom_sheet_layout"
+        android:orientation="vertical"
+        android:layout_gravity="bottom"
+        android:background="@color/ucla_light_blue"
+        android:visibility="gone" />
+
     <android.support.design.widget.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/main_button_options"
         android:layout_gravity="center_horizontal|bottom"
-        android:src="@drawable/ic_unfold_more_white_48dp" />
+        android:src="@drawable/ic_unfold_more_white_48dp"
+        app:layout_anchor="@id/main_bottom_sheet_layout"
+        app:layout_anchorGravity="top|center"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="5dp"
         android:background="@drawable/custom_toolbar_dropshadow"
         android:layout_marginTop="@dimen/custom_toolbar_height"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="top" />
 
 
-</FrameLayout>
+
+<!--</FrameLayout>-->
 
 
-<!--</android.support.design.widget.CoordinatorLayout>-->
+</android.support.design.widget.CoordinatorLayout>

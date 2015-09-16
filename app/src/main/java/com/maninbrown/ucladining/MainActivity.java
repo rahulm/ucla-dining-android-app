@@ -10,14 +10,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.maninbrown.ucladining.fragments.BaseFragment;
 import com.maninbrown.ucladining.fragments.HomeOptionsPage;
 import com.maninbrown.ucladining.util.DebugUtils;
 import com.maninbrown.ucladining.util.FoodItemUtils;
+import com.maninbrown.ucladining.util.OnOptionsDismissListener;
+
+import java.util.ArrayList;
 
 
 /**
@@ -40,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton mRefreshButton;
     private TextView mTitleView;
     private FloatingActionButton mOptionsButton;
+
+    private LinearLayout mBottomSheetLayout;
 
 
     // Main content stuff
@@ -66,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
             FoodItemUtils.dismissPopUp();
         } else if (mCurrFragment == null || (mCurrFragment instanceof HomeOptionsPage)) {
             finish();
-        } else if (!mCurrFragment.isLayoutRefreshing()){
+        } else if (!mCurrFragment.isLayoutRefreshing()) {
             super.onBackPressed();
         }
     }
@@ -107,8 +115,13 @@ public class MainActivity extends AppCompatActivity {
         mTitleView.setTypeface(typeface);
 
         mOptionsButton = (FloatingActionButton) findViewById(R.id.main_button_options);
-        if (mOptionsButton==null) {
+        if (mOptionsButton == null) {
             logDebug("setUpToolbar mOptionsButton is null");
+        }
+
+        mBottomSheetLayout = (LinearLayout) findViewById(R.id.main_bottom_sheet_layout);
+        if (mBottomSheetLayout == null) {
+            logDebug("setUpToolbar bottom sheet layout is null");
         }
     }
 
@@ -229,11 +242,13 @@ public class MainActivity extends AppCompatActivity {
         if (mOptionsButton != null) {
             logDebug("toggleOptionsButton options button is not null");
             if (isOn) {
-                mOptionsButton.setVisibility(View.VISIBLE);
+//                mOptionsButton.setVisibility(View.VISIBLE);
+                mOptionsButton.show();
                 mOptionsButton.setClickable(true);
             } else {
                 mOptionsButton.setClickable(false);
-                mOptionsButton.setVisibility(View.GONE);
+                mOptionsButton.hide();
+//                mOptionsButton.setVisibility(View.GONE);
             }
             if (onClickListener == null) {
                 mOptionsButton.setClickable(false);
@@ -241,6 +256,37 @@ public class MainActivity extends AppCompatActivity {
                 mOptionsButton.setOnClickListener(onClickListener);
                 mOptionsButton.setClickable(true);
             }
+        }
+    }
+
+
+
+
+    private OnOptionsDismissListener mOptionsDismissListener;
+
+    public void showOptionsLayout(ArrayList<View> views, OnOptionsDismissListener onOptionsDismissListener) {
+        if (mBottomSheetLayout!=null) {
+            mBottomSheetLayout.removeAllViews();
+            if (views==null || views.isEmpty()) {
+                mBottomSheetLayout.setVisibility(View.GONE);
+            } else {
+                for (View view : views) {
+                    ViewParent parent = view.getParent();
+                    if (parent != null) {
+                        ((ViewGroup) parent).removeView(view);
+                    }
+                    mBottomSheetLayout.addView(view);
+                }
+                mBottomSheetLayout.setVisibility(View.VISIBLE);
+            }
+
+            mOptionsDismissListener = onOptionsDismissListener;
+        }
+    }
+
+    public void hideOptionsLayout() {
+        if (mOptionsDismissListener!=null) {
+            mOptionsDismissListener.onOptionsDismiss();
         }
     }
 

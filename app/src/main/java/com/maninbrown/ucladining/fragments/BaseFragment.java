@@ -20,6 +20,9 @@ import android.widget.TextView;
 import com.maninbrown.ucladining.MainActivity;
 import com.maninbrown.ucladining.R;
 import com.maninbrown.ucladining.util.DebugUtils;
+import com.maninbrown.ucladining.util.OnOptionsDismissListener;
+
+import java.util.ArrayList;
 
 /**
  * Base fragment.
@@ -124,6 +127,16 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
         if (mainActivity != null) {
             mainActivity.toggleOptionsButton(mOptionsButtonIsOn, mOptionsButtonOnClickListener);
         }
+    }
+
+    protected void showOptionsLayout(ArrayList<View> views, OnOptionsDismissListener onOptionsDismissListener) {
+        logDebug("showOptionsLayout reached begin");
+        getMainActivity().showOptionsLayout(views, onOptionsDismissListener);
+    }
+
+    protected void hideOptionsLayout() {
+        logDebug("hideOptionsLayout reached begin");
+        getMainActivity().hideOptionsLayout();
     }
 
     protected void setLayoutId(int layoutId) {

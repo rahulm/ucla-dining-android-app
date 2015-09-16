@@ -42,6 +42,8 @@ public class RestaurantHoursPage extends BaseFragment {
         setRefreshButtonIsOn(true);
         setLayoutId(R.layout.generic_refreshable_list_page);
         setToolbarTitle("Hours");
+
+        // TODO: set options
     }
 
     @Override

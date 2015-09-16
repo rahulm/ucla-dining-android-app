@@ -1,5 +1,6 @@
 package com.maninbrown.ucladining.fragments;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 
 import com.maninbrown.ucladining.R;
 import com.maninbrown.ucladining.util.FoodItemUtils;
+import com.maninbrown.ucladining.util.OnOptionsDismissListener;
 import com.maninbrown.ucladining.util.TypefaceUtil;
 
 import java.util.ArrayList;
@@ -93,11 +95,24 @@ public class ResidentialRestaurantsPage extends BaseFragment {
         setToolbarTitle("Residential Restaurants");
         setRefreshButtonIsOn(true);
         setBackButtonOn(true);
+
+        final OnOptionsDismissListener onOptionsDismissListener = new OnOptionsDismissListener() {
+            @Override
+            public void onOptionsDismiss() {
+                Toast.makeText(getActivity(), "dismissing options", Toast.LENGTH_SHORT).show();
+                // TODO: refresh stuff
+            }
+        };
+
+        // TODO: set up options
         setOptionsButtonIsOn(true, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "Option button pressed", Toast.LENGTH_SHORT).show();
-                // TODO: something
+                Toast.makeText(getActivity(), "options clicked", Toast.LENGTH_SHORT).show();
+                // TODO testing
+                ArrayList<View> views = new ArrayList<View>();
+                views.add(LayoutInflater.from(getActivity()).inflate(R.layout.bottom_sheet_title, null, false));
+                showOptionsLayout(views, onOptionsDismissListener);
             }
         });
 

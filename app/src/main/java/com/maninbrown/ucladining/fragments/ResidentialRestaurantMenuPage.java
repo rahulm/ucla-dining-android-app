@@ -59,6 +59,8 @@ public class ResidentialRestaurantMenuPage extends BaseFragment {
         setBackButtonOn(true);
         setToolbarTitle(mRestaurantName);
         setLayoutId(R.layout.generic_refreshable_list_page);
+
+        // TODO: set up options
     }
 
     @Override

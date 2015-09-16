@@ -41,7 +41,9 @@ public class HomeOptionsPage extends BaseFragment {
         setToolbarTitle("UCLA Dining");
         setBackButtonOn(false);
         setRefreshButtonIsOn(false);
-        setOptionsButtonIsOn(false, null);
+
+        // TODO: options
+
         setLayoutId(R.layout.generic_refreshable_list_page);
         setUpOptionsModels();
 
