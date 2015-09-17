@@ -3,12 +3,14 @@ package com.maninbrown.ucladining;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -62,14 +64,18 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        logDebug("onBackPressed reached");
         if (mCurrFragment!=null && mCurrFragment.optionsPopupIsShowing()) {
             logDebug("onBackPressed reached for options pop up is showing.");
             mCurrFragment.hideOptionsLayout();
         } else if (FoodItemUtils.popUpWindowIsShowing) {
+            logDebug("onBackPressed reached for food item info showing");
             FoodItemUtils.dismissPopUp();
         } else if (mCurrFragment == null || (mCurrFragment instanceof HomeOptionsPage)) {
+            logDebug("onBackPressed reached for last page");
             finish();
         } else if (!mCurrFragment.isLayoutRefreshing()) {
+            logDebug("onBackPressed reached for normal stuff");
             super.onBackPressed();
         }
     }
@@ -247,6 +253,15 @@ public class MainActivity extends AppCompatActivity {
                 mOptionsButton.setClickable(true);
             }
         }
+    }
+
+
+    public void setOptionsButtonViewAnchor(int layoutRes) {
+        logDebug("setOptionsButtonViewAnchor reached begin");
+        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) mOptionsButton.getLayoutParams();
+        layoutParams.setAnchorId(layoutRes);
+        layoutParams.anchorGravity = Gravity.TOP;
+        mOptionsButton.setLayoutParams(layoutParams);
     }
 
 }

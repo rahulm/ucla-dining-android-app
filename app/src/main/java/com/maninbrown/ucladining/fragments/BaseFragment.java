@@ -140,7 +140,7 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
     protected void showOptionsLayout(ArrayList<View> views, final OnOptionsDismissListener onOptionsDismissListener) {
         logDebug("showOptionsLayout reached begin");
 //        getMainActivity().showOptionsLayout(views, onOptionsDismissListener);
-        LinearLayout layout = (LinearLayout) LayoutInflater.from(getActivity()).inflate(R.layout.bottom_sheet_linear_layout, null, false);
+        LinearLayout layout = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.bottom_sheet_linear_layout, null);
         layout.removeAllViews();
         for (View view : views) {
             ViewParent parent = view.getParent();
@@ -148,8 +148,9 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
                 ((ViewGroup) parent).removeView(view);
             }
             layout.addView(view);
+            logDebug("showOptionsLayout adding a view");
         }
-        mOptionsPopupWindow = new PopupWindow(getActivity());
+        mOptionsPopupWindow = new PopupWindow(layout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         mOptionsPopupWindow.setContentView(layout);
         mOptionsPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
@@ -160,6 +161,8 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
             }
         });
         mOptionsPopupWindow.showAtLocation(layout, Gravity.BOTTOM, 0, 0);
+
+//        getMainActivity().setOptionsButtonViewAnchor(layout.getId());
     }
 
     public void hideOptionsLayout() {
