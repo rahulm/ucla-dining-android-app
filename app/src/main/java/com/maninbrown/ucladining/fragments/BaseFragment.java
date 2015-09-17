@@ -12,9 +12,13 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.maninbrown.ucladining.MainActivity;
@@ -60,6 +64,10 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
     private boolean mOptionsButtonIsOn = false;
 
     private View.OnClickListener mOptionsButtonOnClickListener = null;
+
+
+    private PopupWindow mOptionsPopupWindow;
+
 
     protected void setRootView(View view) {
         mRootView = view;
@@ -129,15 +137,43 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
         }
     }
 
-    protected void showOptionsLayout(ArrayList<View> views, OnOptionsDismissListener onOptionsDismissListener) {
+    protected void showOptionsLayout(ArrayList<View> views, final OnOptionsDismissListener onOptionsDismissListener) {
         logDebug("showOptionsLayout reached begin");
-        getMainActivity().showOptionsLayout(views, onOptionsDismissListener);
+//        getMainActivity().showOptionsLayout(views, onOptionsDismissListener);
+        LinearLayout layout = (LinearLayout) LayoutInflater.from(getActivity()).inflate(R.layout.bottom_sheet_linear_layout, null, false);
+        layout.removeAllViews();
+        for (View view : views) {
+            ViewParent parent = view.getParent();
+            if (parent != null) {
+                ((ViewGroup) parent).removeView(view);
+            }
+            layout.addView(view);
+        }
+        mOptionsPopupWindow = new PopupWindow(getActivity());
+        mOptionsPopupWindow.setContentView(layout);
+        mOptionsPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                logDebug("onDismiss reached for options pop up window");
+                if (onOptionsDismissListener != null)
+                    onOptionsDismissListener.onOptionsDismiss();
+            }
+        });
+        mOptionsPopupWindow.showAtLocation(layout, Gravity.BOTTOM, 0, 0);
     }
 
-    protected void hideOptionsLayout() {
+    public void hideOptionsLayout() {
         logDebug("hideOptionsLayout reached begin");
-        getMainActivity().hideOptionsLayout();
+//        getMainActivity().hideOptionsLayout();
+        if (mOptionsPopupWindow != null && mOptionsPopupWindow.isShowing()) {
+            mOptionsPopupWindow.dismiss();
+        }
     }
+
+    public boolean optionsPopupIsShowing() {
+        return (mOptionsPopupWindow != null && mOptionsPopupWindow.isShowing());
+    }
+
 
     protected void setLayoutId(int layoutId) {
         mLayoutId = layoutId;

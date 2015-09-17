@@ -171,7 +171,6 @@ public class FoodItemUtils {
 
                 mPopUpWindow.showAtLocation(rootView, Gravity.CENTER, 0, 0);
                 popUpWindowIsShowing = true;
-                // TODO: set content view and show
             }
         });
     }

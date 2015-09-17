@@ -110,7 +110,7 @@ public class ResidentialRestaurantsPage extends BaseFragment {
             public void onClick(View v) {
                 Toast.makeText(getActivity(), "options clicked", Toast.LENGTH_SHORT).show();
                 // TODO testing
-                ArrayList<View> views = new ArrayList<View>();
+                ArrayList<View> views = new ArrayList<>();
                 views.add(LayoutInflater.from(getActivity()).inflate(R.layout.bottom_sheet_title, null, false));
                 showOptionsLayout(views, onOptionsDismissListener);
             }
