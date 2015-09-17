@@ -12,6 +12,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -43,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView mTitleView;
     private FloatingActionButton mOptionsButton;
 
+    private View mDimView;
 
     // Main content stuff
     private FrameLayout mContentFrame;
@@ -65,12 +68,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         logDebug("onBackPressed reached");
-        if (mCurrFragment!=null && mCurrFragment.optionsPopupIsShowing()) {
-            logDebug("onBackPressed reached for options pop up is showing.");
-            mCurrFragment.hideOptionsLayout();
-        } else if (FoodItemUtils.popUpWindowIsShowing) {
+        if (FoodItemUtils.popUpWindowIsShowing) {
             logDebug("onBackPressed reached for food item info showing");
             FoodItemUtils.dismissPopUp();
+        } else if (mCurrFragment != null && mCurrFragment.optionsPopupIsShowing()) {
+            logDebug("onBackPressed reached for options pop up is showing.");
+            mCurrFragment.hideOptionsLayout();
         } else if (mCurrFragment == null || (mCurrFragment instanceof HomeOptionsPage)) {
             logDebug("onBackPressed reached for last page");
             finish();
@@ -119,6 +122,9 @@ public class MainActivity extends AppCompatActivity {
         if (mOptionsButton == null) {
             logDebug("setUpToolbar mOptionsButton is null");
         }
+
+        mDimView = findViewById(R.id.main_dim_view);
+        mDimView.setVisibility(View.GONE);
     }
 
     /**
@@ -161,11 +167,6 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
 
             mCurrFragment = fragment;
-//            getSupportFragmentManager()
-//                    .beginTransaction()
-//                    .replace(R.id.main_content, mCurrFragment)
-//                    .addToBackStack(null)
-//                    .commit();
         }
     }
 
@@ -255,6 +256,72 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    private boolean mDimAnimationHappening = false;
+
+    public void showDimView() {
+        if (mDimAnimationHappening) return;
+
+        if (mDimView != null) {
+            Animation animation = new AlphaAnimation(0f, 1f);
+            animation.setDuration(getResources().getInteger(R.integer.bottom_sheet_anim_duration));
+            animation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                    mDimView.setVisibility(View.VISIBLE);
+                    mDimAnimationHappening = true;
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    mDimAnimationHappening = false;
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+            mDimView.startAnimation(animation);
+            mDimView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mCurrFragment != null && mCurrFragment.optionsPopupIsShowing()) {
+                        mCurrFragment.hideOptionsLayout();
+                    }
+                }
+            });
+            mDimView.setClickable(true);
+        }
+    }
+
+    public void hideDimView() {
+        if (mDimAnimationHappening) return;
+
+        if (mDimView != null) {
+            Animation animation = new AlphaAnimation(1f, 0f);
+            animation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                    mDimView.setVisibility(View.VISIBLE);
+                    mDimAnimationHappening = true;
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    mDimView.setVisibility(View.GONE);
+                    mDimAnimationHappening = false;
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+            animation.setDuration(getResources().getInteger(R.integer.bottom_sheet_anim_duration));
+            mDimView.startAnimation(animation);
+        }
+    }
 
     public void setOptionsButtonViewAnchor(int layoutRes) {
         logDebug("setOptionsButtonViewAnchor reached begin");

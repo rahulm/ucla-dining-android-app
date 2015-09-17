@@ -1,6 +1,4 @@
-<resources
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto">
+<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:card_view="http://schemas.android.com/apk/res-auto">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
@@ -24,6 +22,12 @@
         <item name="cardBackgroundColor">@color/ucla_light_blue</item>
         <item name="android:foreground">?android:attr/selectableItemBackground</item>
         <item name="android:layout_margin">10dp</item>
+    </style>
+
+
+    <style name="BottomSheetPopUpAnimation">
+        <item name="android:windowEnterAnimation">@anim/bottom_sheet_pop_up</item>
+        <item name="android:windowExitAnimation">@anim/bottom_sheet_pop_down</item>
     </style>
 
 </resources>

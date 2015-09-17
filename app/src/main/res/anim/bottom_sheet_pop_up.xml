@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shareInterpolator="false">
+    <translate
+        android:duration="@integer/bottom_sheet_anim_duration"
+        android:fillAfter="true"
+        android:fillBefore="false"
+        android:fillEnabled="true"
+        android:fromYDelta="100%"
+        android:toYDelta="0%" />
+</set>

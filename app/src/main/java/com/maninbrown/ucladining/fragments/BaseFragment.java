@@ -139,6 +139,11 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
 
     protected void showOptionsLayout(ArrayList<View> views, final OnOptionsDismissListener onOptionsDismissListener) {
         logDebug("showOptionsLayout reached begin");
+
+        if (optionsPopupIsShowing()) {
+            return;
+        }
+
 //        getMainActivity().showOptionsLayout(views, onOptionsDismissListener);
         LinearLayout layout = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.bottom_sheet_linear_layout, null);
         layout.removeAllViews();
@@ -156,11 +161,14 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
             @Override
             public void onDismiss() {
                 logDebug("onDismiss reached for options pop up window");
+                getMainActivity().hideDimView();
                 if (onOptionsDismissListener != null)
                     onOptionsDismissListener.onOptionsDismiss();
             }
         });
+        mOptionsPopupWindow.setAnimationStyle(R.style.BottomSheetPopUpAnimation);
         mOptionsPopupWindow.showAtLocation(layout, Gravity.BOTTOM, 0, 0);
+        getMainActivity().showDimView();
 
 //        getMainActivity().setOptionsButtonViewAnchor(layout.getId());
     }

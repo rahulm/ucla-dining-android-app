@@ -8,4 +8,6 @@
     <dimen name="card_elevation">3dp</dimen>
 
     <dimen name="food_item_card_height">40dp</dimen>
+
+    <integer name="bottom_sheet_anim_duration">500</integer>
 </resources>
