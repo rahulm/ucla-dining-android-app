@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">UCLA Dining</string>
+
+
+    <string-array name="spinner_residential_restaurants">
+        <item>Breakfast</item>
+        <item>Lunch</item>
+        <item>Dinner</item>
+    </string-array>
+
 </resources>

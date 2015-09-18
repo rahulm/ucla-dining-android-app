@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -56,7 +57,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         // Set main content layout
-        setContentView(R.layout.main_activity_layout);
+//        setContentView(R.layout.main_activity_layout);
+//        View view = LayoutInflater.from(this.getParent()).inflate(R.layout.main_activity_layout, null);
+        this.setContentView(R.layout.main_activity_layout);
 
         // Set up Toolbar and action bar layouts etc.
         setUpToolbar();

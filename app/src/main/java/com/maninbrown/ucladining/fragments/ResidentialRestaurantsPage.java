@@ -4,14 +4,17 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.widget.CalendarView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +52,8 @@ public class ResidentialRestaurantsPage extends BaseFragment {
     private DateTime mCurrentDate;
 
     private DatePicker mDatePicker;
+
+    private Spinner mSpinner;
 
 
     @Override
@@ -117,11 +122,11 @@ public class ResidentialRestaurantsPage extends BaseFragment {
             public void onOptionsDismiss() {
                 Toast.makeText(getActivity(), "dismissing options", Toast.LENGTH_SHORT).show();
                 // TODO: refresh stuff
-                if (mDatePicker!=null) {
+                if (mDatePicker != null) {
                     logDebug("onOptionsDismiss reached for setting new current date time");
                     mCurrentDate = new DateTime()
                             .withDayOfMonth(mDatePicker.getDayOfMonth())
-                            .withMonthOfYear(mDatePicker.getMonth()+1)
+                            .withMonthOfYear(mDatePicker.getMonth() + 1)
                             .withYear(mDatePicker.getYear());
                 }
                 doRefresh(null);
@@ -144,9 +149,6 @@ public class ResidentialRestaurantsPage extends BaseFragment {
 //        return super.createOptionsLayoutViews();
         ArrayList<View> views = new ArrayList<>();
 
-//        TextView textView = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.bottom_sheet_title, null, false);
-//        textView.setTypeface(TypefaceUtil.getBold(getActivity()));
-//        views.add(textView);
         View titleLayout = LayoutInflater.from(getActivity()).inflate(R.layout.bottom_sheet_title, null, false);
         TextView textView = (TextView) titleLayout.findViewById(R.id.bottom_sheet_title_view);
         textView.setTypeface(TypefaceUtil.getBold(getActivity()));
@@ -160,26 +162,52 @@ public class ResidentialRestaurantsPage extends BaseFragment {
         });
         views.add(titleLayout);
 
-        LinearLayout linearLayout = (LinearLayout) LayoutInflater.from(getActivity()).inflate(R.layout.bottom_sheet_meal_picker, null, false);
+
+        if (getActivity() == null) {
+            Log.e(TAG, "createOptionsLayoutViews activity is null!");
+        }
+        LinearLayout linearLayout = (LinearLayout) LayoutInflater.from(getActivity()).inflate(R.layout.bottom_sheet_meal_picker, null);
         ((TextView) linearLayout.findViewById(R.id.bottom_sheet_meal_text)).setTypeface(TypefaceUtil.getBold(getActivity()));
+        mSpinner = (Spinner) linearLayout.findViewById(R.id.bottom_sheet_meal_spinner);
+
+
+//        String[] spinnerEntries = getResources().getStringArray(R.array.spinner_residential_restaurants);
+        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.spinner_residential_restaurants, android.R.layout.simple_spinner_item);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+        mSpinner.setAdapter(spinnerAdapter);
+
+        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                logDebug("onItemSelected for position: " + position);
+                logDebug("onItemSelected item string is: " + parent.getItemAtPosition(position).toString());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                logDebug("onNothingSelected nothing selected");
+            }
+        });
+        // TODO: do the spinner adapter
         views.add(linearLayout);
 
 
         mDatePicker = new DatePicker(getActivity());
         mDatePicker.setCalendarViewShown(false);
         mDatePicker.setSpinnersShown(true);
-//        ViewGroup.LayoutParams layoutParams = mDatePicker.getLayoutParams();
-//        layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
-//        layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-//        mDatePicker.setLayoutParams(layoutParams);
-        mDatePicker.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-//        NetworkHelpers.getDateString()
+
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
+
+        mDatePicker.setLayoutParams(layoutParams);
+
+
         int day, month, year;
         if (mCurrentDate == null) {
             mCurrentDate = DateTime.now();
         }
         day = mCurrentDate.getDayOfMonth();
-        month = mCurrentDate.getMonthOfYear()-1;
+        month = mCurrentDate.getMonthOfYear() - 1;
         year = mCurrentDate.getYear();
         mDatePicker.init(year, month, day, new DatePicker.OnDateChangedListener() {
             @Override
@@ -191,16 +219,6 @@ public class ResidentialRestaurantsPage extends BaseFragment {
                         .withDayOfMonth(dayOfMonth);
             }
         });
-//        mDatePicker.getCalendarView().setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-//            @Override
-//            public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
-//                logDebug("onSelectedDayChange reached for day: " + dayOfMonth + ", month: " + month + ", year: " + year);
-//                mCurrentDate = new DateTime()
-//                        .withYear(year)
-//                        .withMonthOfYear(month+1)
-//                        .withDayOfMonth(dayOfMonth);
-//            }
-//        });
 
         views.add(mDatePicker);
 
