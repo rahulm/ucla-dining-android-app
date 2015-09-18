@@ -54,7 +54,7 @@ public class ResidentialRestaurantsPage extends BaseFragment {
                 logDebug("doRefresh trying to show refresh icon");
                 showSwipeRefresh();
             }
-            DiningAPI.getResidentialRestaurantsPage(new OnCompleteListener() {
+            DiningAPI.getResidentialRestaurantsPage(getCurrentOptions(), new OnCompleteListener() {
                 @Override
                 public void onComplete() {
                     logDebug("onComplete reached");
@@ -109,14 +109,24 @@ public class ResidentialRestaurantsPage extends BaseFragment {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getActivity(), "options clicked", Toast.LENGTH_SHORT).show();
-                // TODO testing
-                ArrayList<View> views = new ArrayList<>();
-                views.add(LayoutInflater.from(getActivity()).inflate(R.layout.bottom_sheet_title, null, false));
-                showOptionsLayout(views, onOptionsDismissListener);
             }
-        });
+        }, onOptionsDismissListener);
 
         setLayoutId(R.layout.generic_refreshable_list_page);
+    }
+
+    @Override
+    protected ArrayList<View> createOptionsLayoutViews() {
+//        return super.createOptionsLayoutViews();
+        ArrayList<View> views = new ArrayList<>();
+
+        TextView textView = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.bottom_sheet_title, null, false);
+        textView.setTypeface(TypefaceUtil.getBold(getActivity()));
+        views.add(textView);
+
+
+
+        return views;
     }
 
     @Override

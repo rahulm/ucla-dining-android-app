@@ -27,6 +27,7 @@ import com.maninbrown.ucladining.util.DebugUtils;
 import com.maninbrown.ucladining.util.OnOptionsDismissListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Base fragment.
@@ -67,6 +68,8 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
 
 
     private PopupWindow mOptionsPopupWindow;
+
+    private HashMap<String, String> mCurrentOptionsParams;
 
 
     protected void setRootView(View view) {
@@ -124,9 +127,16 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
     }
 
 
-    protected void setOptionsButtonIsOn(boolean isOn, @Nullable View.OnClickListener onClickListener) {
+    protected void setOptionsButtonIsOn(boolean isOn, @Nullable final View.OnClickListener onClickListener, final OnOptionsDismissListener onOptionsDismissListener) {
         mOptionsButtonIsOn = isOn;
-        mOptionsButtonOnClickListener = onClickListener;
+//        mOptionsButtonOnClickListener = onClickListener;
+        mOptionsButtonOnClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showOptionsLayout(createOptionsLayoutViews(), onOptionsDismissListener);
+                if (onClickListener != null) onClickListener.onClick(v);
+            }
+        };
         refreshOptionsButton();
     }
 
@@ -137,8 +147,16 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
         }
     }
 
+    protected ArrayList<View> createOptionsLayoutViews() {
+        return null;
+    }
+
     protected void showOptionsLayout(ArrayList<View> views, final OnOptionsDismissListener onOptionsDismissListener) {
         logDebug("showOptionsLayout reached begin");
+
+        if (views == null) {
+            return;
+        }
 
         if (optionsPopupIsShowing()) {
             return;
@@ -183,6 +201,17 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
 
     public boolean optionsPopupIsShowing() {
         return (mOptionsPopupWindow != null && mOptionsPopupWindow.isShowing());
+    }
+
+    protected void addCurrentOption(String param, String value) {
+        if (mCurrentOptionsParams == null) {
+            mCurrentOptionsParams = new HashMap<>();
+        }
+        mCurrentOptionsParams.put(param, value);
+    }
+
+    protected HashMap<String, String> getCurrentOptions() {
+        return mCurrentOptionsParams;
     }
 
 

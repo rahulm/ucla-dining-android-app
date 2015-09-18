@@ -135,7 +135,7 @@ public class RestaurantHoursPage extends BaseFragment {
                 for (String hour : hours) {
                     View rootView = LayoutInflater.from(getActivity()).inflate(R.layout.restaurant_hours_item, null, false);
                     TextView textView = (TextView) rootView.findViewById(R.id.restaurant_hours_item_text);
-                    textView.setText(hour);
+                    textView.setText(hour.replace("<br>", ""));
                     textView.setTypeface(TypefaceUtil.getItalic(getActivity()));
 
                     ViewParent parent = rootView.getParent();

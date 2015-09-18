@@ -263,6 +263,16 @@ public class MainActivity extends AppCompatActivity {
         if (mDimAnimationHappening) return;
 
         if (mDimView != null) {
+            mDimView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mCurrFragment != null && mCurrFragment.optionsPopupIsShowing()) {
+                        mCurrFragment.hideOptionsLayout();
+                    }
+                }
+            });
+            mDimView.setClickable(true);
+
             Animation animation = new AlphaAnimation(0f, 1f);
             animation.setDuration(getResources().getInteger(R.integer.bottom_sheet_anim_duration));
             animation.setAnimationListener(new Animation.AnimationListener() {
@@ -283,15 +293,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
             mDimView.startAnimation(animation);
-            mDimView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mCurrFragment != null && mCurrFragment.optionsPopupIsShowing()) {
-                        mCurrFragment.hideOptionsLayout();
-                    }
-                }
-            });
-            mDimView.setClickable(true);
         }
     }
 
