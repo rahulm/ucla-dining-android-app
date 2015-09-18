@@ -15,11 +15,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.maninbrown.ucladining.R;
+import com.maninbrown.ucladining.util.DateUtils;
 import com.maninbrown.ucladining.util.FoodItemUtils;
 import com.maninbrown.ucladining.util.OnOptionsDismissListener;
 import com.maninbrown.ucladining.util.TypefaceUtil;
 
+import org.joda.time.DateTime;
+
 import java.util.ArrayList;
+import java.util.Date;
 
 import api.DiningAPI;
 import api.DiningAPIEndpoints;
@@ -28,6 +32,7 @@ import models.RateableItem;
 import models.Section;
 import models.SectionItem;
 import models.SectionList;
+import util.NetworkHelpers;
 import util.diningAPICallbacks.OnCompleteListener;
 import util.diningAPICallbacks.OnFailureListener;
 import util.diningAPICallbacks.OnSuccessListener;
@@ -42,6 +47,9 @@ public class ResidentialRestaurantsPage extends BaseFragment {
 
     private SectionList mSectionList;
 
+    private DateTime mCurrentDate;
+
+
     @Override
     public void doRefresh(final RefreshListener refreshListener) {
         logDebug("doRefresh reached begin");
@@ -55,6 +63,12 @@ public class ResidentialRestaurantsPage extends BaseFragment {
                 logDebug("doRefresh trying to show refresh icon");
                 showSwipeRefresh();
             }
+
+            if (mCurrentDate != null) {
+                addCurrentOption(DiningAPIEndpoints.PARAM_KEY_DATE, DateUtils.getDateStringFromDateTime(mCurrentDate));
+                logDebug("doRefresh date param: " + DiningAPIEndpoints.PARAM_KEY_DATE + ": " + DateUtils.getDateStringFromDateTime(mCurrentDate));
+            }
+
             DiningAPI.getResidentialRestaurantsPage(getCurrentOptions(), new OnCompleteListener() {
                 @Override
                 public void onComplete() {
@@ -102,6 +116,7 @@ public class ResidentialRestaurantsPage extends BaseFragment {
             public void onOptionsDismiss() {
                 Toast.makeText(getActivity(), "dismissing options", Toast.LENGTH_SHORT).show();
                 // TODO: refresh stuff
+                doRefresh(null);
             }
         };
 
@@ -150,6 +165,25 @@ public class ResidentialRestaurantsPage extends BaseFragment {
 //        layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
 //        datePicker.setLayoutParams(layoutParams);
         datePicker.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+//        NetworkHelpers.getDateString()
+        int day, month, year;
+        if (mCurrentDate == null) {
+            mCurrentDate = DateTime.now();
+        }
+        day = mCurrentDate.getDayOfMonth();
+        month = mCurrentDate.getMonthOfYear()-1;
+        year = mCurrentDate.getYear();
+        datePicker.init(year, month, day, new DatePicker.OnDateChangedListener() {
+            @Override
+            public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                logDebug("onDateChanged reached for day: " + dayOfMonth + ", month: " + monthOfYear + ", year: " + year);
+                mCurrentDate = new DateTime()
+                        .withYear(year)
+                        .withMonthOfYear(monthOfYear+1)
+                        .withDayOfMonth(dayOfMonth);
+            }
+        });
+
         views.add(datePicker);
 
         return views;
