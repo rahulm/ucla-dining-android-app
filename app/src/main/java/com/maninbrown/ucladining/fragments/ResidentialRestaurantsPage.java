@@ -1,6 +1,5 @@
 package com.maninbrown.ucladining.fragments;
 
-import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.widget.DatePicker;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -120,14 +121,40 @@ public class ResidentialRestaurantsPage extends BaseFragment {
 //        return super.createOptionsLayoutViews();
         ArrayList<View> views = new ArrayList<>();
 
-        TextView textView = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.bottom_sheet_title, null, false);
+//        TextView textView = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.bottom_sheet_title, null, false);
+//        textView.setTypeface(TypefaceUtil.getBold(getActivity()));
+//        views.add(textView);
+        View titleLayout = LayoutInflater.from(getActivity()).inflate(R.layout.bottom_sheet_title, null, false);
+        TextView textView = (TextView) titleLayout.findViewById(R.id.bottom_sheet_title_view);
         textView.setTypeface(TypefaceUtil.getBold(getActivity()));
-        views.add(textView);
+        ImageButton exitButton = (ImageButton) titleLayout.findViewById(R.id.bottom_sheet_title_exit_button);
+        exitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity(), "exit pressed", Toast.LENGTH_SHORT).show();
+                hideOptionsLayout();
+            }
+        });
+        views.add(titleLayout);
+
+        LinearLayout linearLayout = (LinearLayout) LayoutInflater.from(getActivity()).inflate(R.layout.bottom_sheet_meal_picker, null, false);
+        ((TextView) linearLayout.findViewById(R.id.bottom_sheet_meal_text)).setTypeface(TypefaceUtil.getBold(getActivity()));
+        views.add(linearLayout);
 
 
+        DatePicker datePicker = new DatePicker(getActivity());
+        datePicker.setCalendarViewShown(false);
+        datePicker.setSpinnersShown(true);
+//        ViewGroup.LayoutParams layoutParams = datePicker.getLayoutParams();
+//        layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+//        layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+//        datePicker.setLayoutParams(layoutParams);
+        datePicker.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        views.add(datePicker);
 
         return views;
     }
+
 
     @Override
     protected void populateRootView() {
@@ -235,7 +262,7 @@ public class ResidentialRestaurantsPage extends BaseFragment {
                                         rootView.setClickable(true);
                                         hideSwipeRefresh();
                                     }
-                                },null ,null);
+                                }, null, null);
                             }
                         });
                         rootView.setClickable(true);
