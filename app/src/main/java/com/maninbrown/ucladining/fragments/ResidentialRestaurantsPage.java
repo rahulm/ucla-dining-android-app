@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.widget.CalendarView;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -23,7 +24,6 @@ import com.maninbrown.ucladining.util.TypefaceUtil;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 import api.DiningAPI;
 import api.DiningAPIEndpoints;
@@ -32,7 +32,6 @@ import models.RateableItem;
 import models.Section;
 import models.SectionItem;
 import models.SectionList;
-import util.NetworkHelpers;
 import util.diningAPICallbacks.OnCompleteListener;
 import util.diningAPICallbacks.OnFailureListener;
 import util.diningAPICallbacks.OnSuccessListener;
@@ -48,6 +47,8 @@ public class ResidentialRestaurantsPage extends BaseFragment {
     private SectionList mSectionList;
 
     private DateTime mCurrentDate;
+
+    private DatePicker mDatePicker;
 
 
     @Override
@@ -116,6 +117,13 @@ public class ResidentialRestaurantsPage extends BaseFragment {
             public void onOptionsDismiss() {
                 Toast.makeText(getActivity(), "dismissing options", Toast.LENGTH_SHORT).show();
                 // TODO: refresh stuff
+                if (mDatePicker!=null) {
+                    logDebug("onOptionsDismiss reached for setting new current date time");
+                    mCurrentDate = new DateTime()
+                            .withDayOfMonth(mDatePicker.getDayOfMonth())
+                            .withMonthOfYear(mDatePicker.getMonth()+1)
+                            .withYear(mDatePicker.getYear());
+                }
                 doRefresh(null);
             }
         };
@@ -157,14 +165,14 @@ public class ResidentialRestaurantsPage extends BaseFragment {
         views.add(linearLayout);
 
 
-        DatePicker datePicker = new DatePicker(getActivity());
-        datePicker.setCalendarViewShown(false);
-        datePicker.setSpinnersShown(true);
-//        ViewGroup.LayoutParams layoutParams = datePicker.getLayoutParams();
+        mDatePicker = new DatePicker(getActivity());
+        mDatePicker.setCalendarViewShown(false);
+        mDatePicker.setSpinnersShown(true);
+//        ViewGroup.LayoutParams layoutParams = mDatePicker.getLayoutParams();
 //        layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
 //        layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-//        datePicker.setLayoutParams(layoutParams);
-        datePicker.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+//        mDatePicker.setLayoutParams(layoutParams);
+        mDatePicker.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 //        NetworkHelpers.getDateString()
         int day, month, year;
         if (mCurrentDate == null) {
@@ -173,18 +181,28 @@ public class ResidentialRestaurantsPage extends BaseFragment {
         day = mCurrentDate.getDayOfMonth();
         month = mCurrentDate.getMonthOfYear()-1;
         year = mCurrentDate.getYear();
-        datePicker.init(year, month, day, new DatePicker.OnDateChangedListener() {
+        mDatePicker.init(year, month, day, new DatePicker.OnDateChangedListener() {
             @Override
             public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 logDebug("onDateChanged reached for day: " + dayOfMonth + ", month: " + monthOfYear + ", year: " + year);
                 mCurrentDate = new DateTime()
                         .withYear(year)
-                        .withMonthOfYear(monthOfYear+1)
+                        .withMonthOfYear(monthOfYear + 1)
                         .withDayOfMonth(dayOfMonth);
             }
         });
+//        mDatePicker.getCalendarView().setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+//            @Override
+//            public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
+//                logDebug("onSelectedDayChange reached for day: " + dayOfMonth + ", month: " + month + ", year: " + year);
+//                mCurrentDate = new DateTime()
+//                        .withYear(year)
+//                        .withMonthOfYear(month+1)
+//                        .withDayOfMonth(dayOfMonth);
+//            }
+//        });
 
-        views.add(datePicker);
+        views.add(mDatePicker);
 
         return views;
     }
