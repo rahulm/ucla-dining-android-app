@@ -11,7 +11,6 @@ import android.view.ViewParent;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +25,7 @@ import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 import api.DiningAPI;
 import api.DiningAPIEndpoints;
@@ -51,8 +51,6 @@ public class ResidentialRestaurantsPage extends BaseFragment {
     private DateTime mCurrentDate;
 
     private DatePicker mDatePicker;
-
-    private Spinner mSpinner;
 
 
     @Override
@@ -160,22 +158,29 @@ public class ResidentialRestaurantsPage extends BaseFragment {
         ArrayList<String> items = new ArrayList<>();
         Collections.addAll(items, strings);
 
+        String currentMealTime = null;
+        HashMap<String, String> options = getCurrentOptions();
+        if (options != null && options.containsKey(DiningAPIEndpoints.PARAM_KEY_MEAL_TIME)) {
+            currentMealTime = options.get(DiningAPIEndpoints.PARAM_KEY_MEAL_TIME);
+        }
+
         LinearLayout linearLayout = GeneralUtils.getInflatedBottomSheetMealPickerLayout(getActivity(),
-                items,
+                items, currentMealTime,
                 new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        String itemName = parent.getItemAtPosition(position).toString();
                         logDebug("onItemSelected for position: " + position);
-                        logDebug("onItemSelected item string is: " + parent.getItemAtPosition(position).toString());
+                        logDebug("onItemSelected item string is: " + itemName);
+                        addCurrentOption(DiningAPIEndpoints.PARAM_KEY_MEAL_TIME, itemName);
                     }
 
                     @Override
                     public void onNothingSelected(AdapterView<?> parent) {
                         logDebug("onNothingSelected nothing selected");
+                        removeCurrentOption(DiningAPIEndpoints.PARAM_KEY_MEAL_TIME);
                     }
                 });
-
-        // TODO: do the spinner adapter
         views.add(linearLayout);
 
 

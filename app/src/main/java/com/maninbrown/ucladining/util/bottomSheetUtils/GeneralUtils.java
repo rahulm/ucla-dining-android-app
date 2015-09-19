@@ -68,12 +68,12 @@ public class GeneralUtils {
         return datePicker;
     }
 
-    public static LinearLayout getInflatedBottomSheetMealPickerLayout(Activity activity, List<String> items, AdapterView.OnItemSelectedListener onItemSelectedListener) {
+    public static LinearLayout getInflatedBottomSheetMealPickerLayout(Activity activity, List<String> items, final String currOptions, AdapterView.OnItemSelectedListener onItemSelectedListener) {
         LinearLayout linearLayout = (LinearLayout) LayoutInflater.from(activity).inflate(R.layout.bottom_sheet_meal_picker, null);
         ((TextView) linearLayout.findViewById(R.id.bottom_sheet_meal_text)).setTypeface(TypefaceUtil.getBold(activity));
-        Spinner spinner = (Spinner) linearLayout.findViewById(R.id.bottom_sheet_meal_spinner);
+        final Spinner spinner = (Spinner) linearLayout.findViewById(R.id.bottom_sheet_meal_spinner);
 
-        ArrayAdapter<String> spinnerAdapter = new CustomSpinnerAdapter(activity, R.layout.meal_spinner_item);
+        final ArrayAdapter<String> spinnerAdapter = new CustomSpinnerAdapter(activity, R.layout.meal_spinner_item);
         if (items != null) {
             spinnerAdapter.addAll(items);
         }
@@ -83,6 +83,22 @@ public class GeneralUtils {
 
         if (onItemSelectedListener != null) {
             spinner.setOnItemSelectedListener(onItemSelectedListener);
+        }
+
+        if (currOptions != null && !currOptions.isEmpty()) {
+            spinner.post(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        int position = spinnerAdapter.getPosition(currOptions);
+                        if (position >= 0 && position < spinnerAdapter.getCount()) {
+                            spinner.setSelection(position);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
         }
 
         return linearLayout;

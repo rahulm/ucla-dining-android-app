@@ -162,7 +162,6 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
             return;
         }
 
-//        getMainActivity().showOptionsLayout(views, onOptionsDismissListener);
         LinearLayout layout = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.bottom_sheet_linear_layout, null);
         layout.removeAllViews();
         for (View view : views) {
@@ -208,6 +207,12 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
             mCurrentOptionsParams = new HashMap<>();
         }
         mCurrentOptionsParams.put(param, value);
+    }
+
+    protected void removeCurrentOption(String param) {
+        if (mCurrentOptionsParams != null && mCurrentOptionsParams.containsKey(param)) {
+            mCurrentOptionsParams.remove(param);
+        }
     }
 
     protected HashMap<String, String> getCurrentOptions() {
