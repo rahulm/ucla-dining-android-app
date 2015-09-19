@@ -11,7 +11,7 @@ import java.util.Hashtable;
  * Created by Rahul on 9/12/2015.
  */
 public class TypefaceUtil {
-    private static final String TAG = "TypefacUtil";
+    private static final String TAG = "TypefaceUtil";
 
     /**
      * Using reflection to override default typeface
@@ -34,6 +34,7 @@ public class TypefaceUtil {
             defaultFontTypefaceField.set(null, customFontTypeface);
         } catch (Exception e) {
             Log.e(TAG, "Can not set custom font " + customFontFileNameInAssets + " instead of " + defaultFontNameToOverride);
+            e.printStackTrace();
         }
     }
 
@@ -47,9 +48,15 @@ public class TypefaceUtil {
                 tf = Typeface.createFromAsset(context.getAssets(), name);
             }
             catch (Exception e) {
+                e.printStackTrace();
+                Log.e(TAG, "get couldn't create from asset: " + name);
                 return null;
             }
             fontCache.put(name, tf);
+        }
+
+        if (tf == null) {
+            Log.e(TAG, "get typeface is null");
         }
         return tf;
     }

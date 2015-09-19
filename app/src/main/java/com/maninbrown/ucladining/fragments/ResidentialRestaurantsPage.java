@@ -12,7 +12,6 @@ import android.view.ViewParent;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -23,6 +22,8 @@ import com.maninbrown.ucladining.util.DateUtils;
 import com.maninbrown.ucladining.util.FoodItemUtils;
 import com.maninbrown.ucladining.util.OnOptionsDismissListener;
 import com.maninbrown.ucladining.util.TypefaceUtil;
+import com.maninbrown.ucladining.util.bottomSheetUtils.CustomSpinnerAdapter;
+import com.maninbrown.ucladining.util.bottomSheetUtils.GeneralUtils;
 
 import org.joda.time.DateTime;
 
@@ -149,18 +150,13 @@ public class ResidentialRestaurantsPage extends BaseFragment {
 //        return super.createOptionsLayoutViews();
         ArrayList<View> views = new ArrayList<>();
 
-        View titleLayout = LayoutInflater.from(getActivity()).inflate(R.layout.bottom_sheet_title, null, false);
-        TextView textView = (TextView) titleLayout.findViewById(R.id.bottom_sheet_title_view);
-        textView.setTypeface(TypefaceUtil.getBold(getActivity()));
-        ImageButton exitButton = (ImageButton) titleLayout.findViewById(R.id.bottom_sheet_title_exit_button);
-        exitButton.setOnClickListener(new View.OnClickListener() {
+
+        views.add(GeneralUtils.getInflatedBottomSheetTitleView(getActivity(), new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "exit pressed", Toast.LENGTH_SHORT).show();
                 hideOptionsLayout();
             }
-        });
-        views.add(titleLayout);
+        }));
 
 
         if (getActivity() == null) {
@@ -171,9 +167,11 @@ public class ResidentialRestaurantsPage extends BaseFragment {
         mSpinner = (Spinner) linearLayout.findViewById(R.id.bottom_sheet_meal_spinner);
 
 
-//        String[] spinnerEntries = getResources().getStringArray(R.array.spinner_residential_restaurants);
-        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.spinner_residential_restaurants, android.R.layout.simple_spinner_item);
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+        String[] spinnerEntries = getResources().getStringArray(R.array.spinner_residential_restaurants);
+
+        ArrayAdapter<String> spinnerAdapter = new CustomSpinnerAdapter(getActivity(), R.layout.meal_spinner_item);
+        spinnerAdapter.addAll(spinnerEntries);
+        spinnerAdapter.setDropDownViewResource(R.layout.meal_spinner_item);
         mSpinner.setAdapter(spinnerAdapter);
 
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -230,7 +228,6 @@ public class ResidentialRestaurantsPage extends BaseFragment {
     protected void populateRootView() {
         logDebug("populateRootView reached begin");
         doRefresh(null);
-//        parseAndPopulateList();
     }
 
     private void parseAndPopulateList() {

@@ -23,6 +23,7 @@ import com.maninbrown.ucladining.fragments.BaseFragment;
 import com.maninbrown.ucladining.fragments.HomeOptionsPage;
 import com.maninbrown.ucladining.util.DebugUtils;
 import com.maninbrown.ucladining.util.FoodItemUtils;
+import com.maninbrown.ucladining.util.TypefaceUtil;
 
 
 /**
@@ -61,11 +62,20 @@ public class MainActivity extends AppCompatActivity {
 //        View view = LayoutInflater.from(this.getParent()).inflate(R.layout.main_activity_layout, null);
         this.setContentView(R.layout.main_activity_layout);
 
+        setUpFonts();
+
         // Set up Toolbar and action bar layouts etc.
         setUpToolbar();
 
         // Set up main fragment
         setUpContentFrame();
+    }
+
+    private void setUpFonts() {
+        TypefaceUtil.overrideFont(this, "DEFAULT", "fonts/Arvo/Arvo-Regular.ttf");
+        TypefaceUtil.overrideFont(this, "SANS_SERIF", "fonts/Arvo/Arvo-Bold.ttf");
+        TypefaceUtil.overrideFont(this, "SERIF", "fonts/Arvo/Arvo-Italic.ttf");
+        TypefaceUtil.overrideFont(this, "MONOSPACE", "fonts/Arvo/Arvo-BoldItalic.ttf");
     }
 
     @Override
