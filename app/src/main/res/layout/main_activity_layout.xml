@@ -1,63 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
 
     <!--<FrameLayout-->
 
 
-    <include layout="@layout/custom_toolbar_layout"/>
+    <include layout="@layout/custom_toolbar_layout" />
 
     <FrameLayout
+        android:id="@+id/main_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/main_content"
         android:layout_marginTop="@dimen/custom_toolbar_height" />
 
 
     <android.support.design.widget.FloatingActionButton
+        android:id="@+id/main_button_options"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/main_button_options"
         android:layout_gravity="right|bottom"
-        android:src="@drawable/ic_event_white_48dp"
-        android:layout_margin="15dp"/>
+        android:layout_margin="15dp"
+        android:src="@drawable/ic_event_white_48dp" />
 
     <View
+        android:id="@+id/main_dim_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#93000000"
+        android:visibility="gone" />
+
+
+    <TextView
+        android:id="@+id/main_floating_info_text"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/main_content_floating_info_height"
+        android:layout_gravity="top"
+        android:layout_marginTop="@dimen/custom_toolbar_height"
+        android:background="#d2febb36"
+        android:gravity="center"
+        android:padding="5dp"
+        android:textSize="15sp"
         android:visibility="gone"
-        android:id="@+id/main_dim_view" />
+        android:ellipsize="marquee" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="5dp"
-        android:background="@drawable/custom_toolbar_dropshadow"
-        android:layout_marginTop="@dimen/custom_toolbar_height"
-        android:layout_gravity="top" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/main_content_floating_info_height"
-        android:layout_marginTop="@dimen/custom_toolbar_height"
         android:layout_gravity="top"
-        android:id="@+id/main_floating_info_text"
-        android:background="#3e000000"
-        android:padding="5dp"
-        android:gravity="center"
-        android:visibility="gone"
-        android:textSize="19sp" />
+        android:layout_marginTop="@dimen/custom_toolbar_height"
+        android:background="@drawable/custom_toolbar_dropshadow" />
 
 
-
-<!--</FrameLayout>-->
+    <!--</FrameLayout>-->
 
 
 </android.support.design.widget.CoordinatorLayout>

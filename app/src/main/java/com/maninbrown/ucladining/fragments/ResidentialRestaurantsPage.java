@@ -12,7 +12,6 @@ import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.maninbrown.ucladining.R;
 import com.maninbrown.ucladining.util.DateUtils;
@@ -22,7 +21,9 @@ import com.maninbrown.ucladining.util.TypefaceUtil;
 import com.maninbrown.ucladining.util.bottomSheetUtils.GeneralUtils;
 
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -61,7 +62,6 @@ public class ResidentialRestaurantsPage extends BaseFragment {
             logDebug("doRefresh attempting refresh");
             isRefreshing = true;
 
-            // TODO: refresh if not already refreshing
             if (!isLayoutRefreshing()) {
                 logDebug("doRefresh trying to show refresh icon");
                 showSwipeRefresh();
@@ -73,11 +73,14 @@ public class ResidentialRestaurantsPage extends BaseFragment {
             }
 
             HashMap<String, String> map = getCurrentOptions();
-            if (map == null || map.isEmpty() || ((!map.containsKey(DiningAPIEndpoints.PARAM_KEY_DATE) && mCurrentDate == null) && (!map.containsKey(DiningAPIEndpoints.PARAM_KEY_MEAL_TIME)))) {
-                getMainActivity().showFloatingInfoText("Today's menu for meals now");
-            } else {
-                getMainActivity().hideFloatingInfoText();
+            String baseToShow = "Menu for meals", dateToShow = "now", mealTimePrefix = "";
+            if (mCurrentDate != null) {
+                dateToShow = DateTimeFormat.forPattern("MMM dd, yyyy").print(mCurrentDate);
             }
+            if (map != null && map.containsKey(DiningAPIEndpoints.PARAM_KEY_MEAL_TIME)) {
+                mealTimePrefix = map.get(DiningAPIEndpoints.PARAM_KEY_MEAL_TIME);
+            }
+            getMainActivity().showFloatingInfoText(mealTimePrefix + " " + baseToShow + " " + dateToShow);
 
             DiningAPI.getResidentialRestaurantsPage(getCurrentOptions(), new OnCompleteListener() {
                 @Override
@@ -99,14 +102,12 @@ public class ResidentialRestaurantsPage extends BaseFragment {
                         setRecyclerAdapter(null);
                         hideSwipeRefresh();
                     }
-//                    hideSwipeRefresh();
                 }
             }, new OnFailureListener() {
                 @Override
                 public void onFailure() {
                     hideSwipeRefresh();
                     Log.e(TAG, "onFailure reached for residential restaurants call");
-//                    Toast.makeText(getActivity(), "Uh oh, there was a problem refreshing! Please try again!", Toast.LENGTH_SHORT).show();
                     setRecyclerAdapter(null);
                 }
             });
@@ -124,8 +125,7 @@ public class ResidentialRestaurantsPage extends BaseFragment {
         final OnOptionsDismissListener onOptionsDismissListener = new OnOptionsDismissListener() {
             @Override
             public void onOptionsDismiss() {
-                Toast.makeText(getActivity(), "dismissing options", Toast.LENGTH_SHORT).show();
-                // TODO: refresh stuff
+//                Toast.makeText(getActivity(), "dismissing options", Toast.LENGTH_SHORT).show();
                 if (mDatePicker != null) {
                     logDebug("onOptionsDismiss reached for setting new current date time");
                     mCurrentDate = new DateTime()
@@ -138,19 +138,13 @@ public class ResidentialRestaurantsPage extends BaseFragment {
         };
 
 
-        setOptionsButtonIsOn(true, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getActivity(), "options clicked", Toast.LENGTH_SHORT).show();
-            }
-        }, onOptionsDismissListener);
+        setOptionsButtonIsOn(true, null, onOptionsDismissListener);
 
         setLayoutId(R.layout.generic_refreshable_list_page);
     }
 
     @Override
     protected ArrayList<View> createOptionsLayoutViews() {
-//        return super.createOptionsLayoutViews();
         ArrayList<View> views = new ArrayList<>();
 
 
@@ -224,9 +218,21 @@ public class ResidentialRestaurantsPage extends BaseFragment {
         }
     }
 
+    public static final String PARAM_DATE_DAY = "day", PARAM_DATE_MONTH = "month", PARAM_DATE_YEAR = "year";
     private void openFullMenuPage(String restaurant) {
         Bundle bundle = new Bundle();
         bundle.putString(DiningAPIEndpoints.PARAM_KEY_RESTAURANT, restaurant);
+        HashMap<String, String> map = getCurrentOptions();
+        if (map != null) {
+            for (String key : map.keySet()) {
+                bundle.putString(key, map.get(key));
+            }
+        }
+        if (mCurrentDate != null) {
+            bundle.putInt(PARAM_DATE_DAY, mCurrentDate.getDayOfMonth());
+            bundle.putInt(PARAM_DATE_MONTH, mCurrentDate.getMonthOfYear());
+            bundle.putInt(PARAM_DATE_YEAR, mCurrentDate.getYear());
+        }
         BaseFragment fragment = new ResidentialRestaurantMenuPage();
         fragment.setArguments(bundle);
         getMainActivity().showFragment(fragment);
@@ -274,8 +280,6 @@ public class ResidentialRestaurantsPage extends BaseFragment {
             holder.restaurantHeaderCard.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    Toast.makeText(getActivity(), section.getRestaurantName() + " clicked.", Toast.LENGTH_SHORT).show();
-                    // TODO: open next full menu fragment with correct restaurant
                     openFullMenuPage(section.getRestaurantName());
                 }
             });

@@ -356,6 +356,7 @@ public class MainActivity extends AppCompatActivity {
             mFloatingInfoTextView.setText(info);
             mFloatingInfoTextView.setTypeface(TypefaceUtil.getItalic(this));
             mFloatingInfoTextView.setVisibility(View.VISIBLE);
+            mFloatingInfoTextView.setSelected(true);
             CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) mContentFrame.getLayoutParams();
             layoutParams.topMargin = (int)(getResources().getDimension(R.dimen.custom_toolbar_height) + getResources().getDimension(R.dimen.main_content_floating_info_height));
             mContentFrame.setLayoutParams(layoutParams);

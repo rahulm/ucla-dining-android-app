@@ -7,8 +7,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.ImageButton;
 import android.widget.PopupWindow;
-import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -87,13 +87,6 @@ public class FoodItemUtils {
                     FoodItemInfo itemInfo = new FoodItemInfo(rateableItem, null, null);
                     showFoodItemInfoPopup(itemInfo, activity);
                     doSuccess(itemInfo, onCompleteListener, onSuccessListener);
-//                    activity.runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            Toast.makeText(activity, "Uh oh, something went wrong! Please try again later.", Toast.LENGTH_SHORT).show();
-//                        }
-//                    });
-//                    doFailure(onCompleteListener, onFailureListener);
                 }
             });
         }
@@ -130,14 +123,14 @@ public class FoodItemUtils {
                     textView.setTypeface(TypefaceUtil.getItalic(activity));
                     cardView.setVisibility(View.VISIBLE);
                 } else {
-                    textView.setText("No ingredient info to display :(");
+                    textView.setText("No ingredient info to display :( Try refreshing.");
                     textView.setTypeface(TypefaceUtil.getItalic(activity));
                     cardView.setVisibility(View.VISIBLE);
                 }
 
                 WebView webView = (WebView) rootView.findViewById(R.id.food_item_info_nutrition_view);
                 String nutritionHTML = foodItemInfo.getNutritionFactsHTML();
-                if (nutritionHTML!=null && !nutritionHTML.isEmpty()) {
+                if (nutritionHTML != null && !nutritionHTML.isEmpty()) {
                     webView.setVisibility(View.VISIBLE);
                     webView.getSettings().setJavaScriptEnabled(true);
                     webView.loadData(foodItemInfo.getNutritionFactsHTML(), "text/html", "UTF-8");
@@ -159,15 +152,24 @@ public class FoodItemUtils {
                 space.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (mPopUpWindow.isShowing()) mPopUpWindow.dismiss();
+                        if (mPopUpWindow != null && mPopUpWindow.isShowing())
+                            mPopUpWindow.dismiss();
                     }
                 });
                 space.setClickable(true);
 
+                ImageButton exitButton = (ImageButton) rootView.findViewById(R.id.food_item_info_exit_button);
+                exitButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mPopUpWindow != null && mPopUpWindow.isShowing())
+                            mPopUpWindow.dismiss();
+                    }
+                });
+                exitButton.setClickable(true);
+
 
                 mPopUpWindow.setContentView(rootView);
-//                mPopUpWindow.setOutsideTouchable(true);
-//                mPopUpWindow.setFocusable(true);
 
                 mPopUpWindow.showAtLocation(rootView, Gravity.CENTER, 0, 0);
                 popUpWindowIsShowing = true;

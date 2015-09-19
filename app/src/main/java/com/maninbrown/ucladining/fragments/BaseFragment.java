@@ -129,7 +129,6 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
 
     protected void setOptionsButtonIsOn(boolean isOn, @Nullable final View.OnClickListener onClickListener, final OnOptionsDismissListener onOptionsDismissListener) {
         mOptionsButtonIsOn = isOn;
-//        mOptionsButtonOnClickListener = onClickListener;
         mOptionsButtonOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
