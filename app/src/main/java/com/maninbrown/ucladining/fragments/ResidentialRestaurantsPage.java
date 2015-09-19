@@ -124,7 +124,6 @@ public class ResidentialRestaurantsPage extends BaseFragment {
         final OnOptionsDismissListener onOptionsDismissListener = new OnOptionsDismissListener() {
             @Override
             public void onOptionsDismiss() {
-//                Toast.makeText(getActivity(), "dismissing options", Toast.LENGTH_SHORT).show();
                 if (mDatePicker != null) {
                     logDebug("onOptionsDismiss reached for setting new current date time");
                     mCurrentDate = new DateTime()
@@ -220,6 +219,10 @@ public class ResidentialRestaurantsPage extends BaseFragment {
     public static final String PARAM_DATE_DAY = "day", PARAM_DATE_MONTH = "month", PARAM_DATE_YEAR = "year";
 
     private void openFullMenuPage(String restaurant) {
+        if (restaurant == null || restaurant.isEmpty()) {
+            Log.e(TAG, "openFullMenuPage restaurant is not properly formatted.");
+            return;
+        }
         Bundle bundle = new Bundle();
         bundle.putString(DiningAPIEndpoints.PARAM_KEY_RESTAURANT, restaurant);
         HashMap<String, String> map = getCurrentOptions();

@@ -87,6 +87,12 @@ public class QuickServiceRestaurantsListPage extends BaseFragment {
     }
 
     private void openMenuPage(RateableItem item) {
+        if (item == null || item.getItemName() == null || item.getItemName().isEmpty()
+                || item.getTargetURL() == null || item.getTargetURL().isEmpty()) {
+            Log.e(TAG, "openMenuPage RateableItem is not correctly formatted");
+            return;
+        }
+
         Bundle bundle = new Bundle();
         bundle.putSerializable(DiningAPIEndpoints.PARAM_KEY_RESTAURANT, item);
         BaseFragment fragment = new QuickServiceMenuPage();

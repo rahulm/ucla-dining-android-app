@@ -7,7 +7,7 @@ import android.util.Log;
  */
 public class DebugUtils {
 
-    public static final boolean DEBUG_MODE_ON = true;
+    public static final boolean DEBUG_MODE_ON = false;
 
     public static void logDebug(String tag, String message) {
         if (DEBUG_MODE_ON)
