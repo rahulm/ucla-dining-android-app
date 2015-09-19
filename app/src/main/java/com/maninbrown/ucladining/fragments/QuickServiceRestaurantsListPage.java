@@ -42,7 +42,7 @@ public class QuickServiceRestaurantsListPage extends BaseFragment {
         setBackButtonOn(true);
         setToolbarTitle("Quick Services");
 
-        // TODO: set up options
+        setOptionsButtonIsOn(false, null, null);
     }
 
     @Override

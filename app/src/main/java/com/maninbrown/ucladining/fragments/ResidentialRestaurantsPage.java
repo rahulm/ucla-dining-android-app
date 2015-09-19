@@ -23,7 +23,6 @@ import com.maninbrown.ucladining.util.bottomSheetUtils.GeneralUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -165,7 +164,7 @@ public class ResidentialRestaurantsPage extends BaseFragment {
             currentMealTime = options.get(DiningAPIEndpoints.PARAM_KEY_MEAL_TIME);
         }
 
-        LinearLayout linearLayout = GeneralUtils.getInflatedBottomSheetMealPickerLayout(getActivity(),
+        LinearLayout linearLayout = GeneralUtils.getInflatedBottomSheetOptionsPickerLayout(getActivity(),
                 items, currentMealTime,
                 new AdapterView.OnItemSelectedListener() {
                     @Override
@@ -219,6 +218,7 @@ public class ResidentialRestaurantsPage extends BaseFragment {
     }
 
     public static final String PARAM_DATE_DAY = "day", PARAM_DATE_MONTH = "month", PARAM_DATE_YEAR = "year";
+
     private void openFullMenuPage(String restaurant) {
         Bundle bundle = new Bundle();
         bundle.putString(DiningAPIEndpoints.PARAM_KEY_RESTAURANT, restaurant);

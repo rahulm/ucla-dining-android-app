@@ -1,5 +1,6 @@
 package com.maninbrown.ucladining;
 
+import android.app.Activity;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -149,64 +150,81 @@ public class MainActivity extends AppCompatActivity {
      * setUpFragmentManager is used to correctly assign mContent when back stack changes, i.e. when the back button is pressed
      */
     private void setUpFragmentManager() {
-        getSupportFragmentManager()
-                .addOnBackStackChangedListener(new android.support.v4.app.FragmentManager.OnBackStackChangedListener() {
-                    @Override
-                    public void onBackStackChanged() {
-                        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_content);
-                        if (fragment == null) {
-                            Log.e(TAG, "onBackStackChanged fragment found is null!");
-                        } else {
-                            if (fragment instanceof BaseFragment) {
-                                mCurrFragment = (BaseFragment) fragment;
-                            } else {
-                                Log.e(TAG, "onBackStackChanged found an incorrect fragment!");
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getSupportFragmentManager()
+                        .addOnBackStackChangedListener(new android.support.v4.app.FragmentManager.OnBackStackChangedListener() {
+                            @Override
+                            public void onBackStackChanged() {
+                                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_content);
+                                if (fragment == null) {
+                                    Log.e(TAG, "onBackStackChanged fragment found is null!");
+                                } else {
+                                    if (fragment instanceof BaseFragment) {
+                                        mCurrFragment = (BaseFragment) fragment;
+                                    } else {
+                                        Log.e(TAG, "onBackStackChanged found an incorrect fragment!");
+                                    }
+                                }
                             }
-                        }
-                    }
-                });
+                        });
+            }
+        });
     }
 
-    public void showFragment(BaseFragment fragment) {
-        if (fragment != null) {
-//            mCurrFragment = fragment;
+    public void showFragment(final BaseFragment fragment) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (fragment != null) {
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction
+                            .add(R.id.main_content, fragment)
+                            .setCustomAnimations(R.anim.slide_in_right, 0)
+                            .show(fragment);
 
-            // TODO: testing slide in animation
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction
-                    .add(R.id.main_content, fragment)
-                    .setCustomAnimations(R.anim.slide_in_right, 0)
-                    .show(fragment);
+                    if (mCurrFragment != null) {
+                        transaction.remove(mCurrFragment);
+                    }
+                    transaction.addToBackStack(null)
+                            .commit();
 
-            if (mCurrFragment != null) {
-                transaction.remove(mCurrFragment);
+                    mCurrFragment = fragment;
+                }
             }
-            transaction.addToBackStack(null)
-                    .commit();
-
-            mCurrFragment = fragment;
-        }
+        });
     }
 
 
     // Toolbar controls
 
-    public void setToolbarTitle(String title) {
-        if (mTitleView != null) {
-            mTitleView.setText(title);
-            mTitleView.setVisibility(View.VISIBLE);
-        }
+    public void setToolbarTitle(final String title) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (mTitleView != null) {
+                    mTitleView.setText(title);
+                    mTitleView.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 
-    public void setToolbarTitleVisibility(int visibility) {
-        if (mTitleView != null) {
-            try {
-                mTitleView.setVisibility(visibility);
-            } catch (Exception e) {
-                Log.e(TAG, "setToolbarTitleVisibility couldn't be set for visibility: " + visibility);
-                e.printStackTrace();
+    public void setToolbarTitleVisibility(final int visibility) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (mTitleView != null) {
+                    try {
+                        mTitleView.setVisibility(visibility);
+                    } catch (Exception e) {
+                        Log.e(TAG, "setToolbarTitleVisibility couldn't be set for visibility: " + visibility);
+                        e.printStackTrace();
+                    }
+                }
             }
-        }
+        });
     }
 
     /**
@@ -214,15 +232,20 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param isOn Turns refresh button on if true, and off if false.
      */
-    public void toggleRefreshButton(boolean isOn) {
+    public void toggleRefreshButton(final boolean isOn) {
         if (mRefreshButton != null) {
-            if (isOn) {
-                mRefreshButton.setVisibility(View.VISIBLE);
-                mRefreshButton.setClickable(true);
-            } else {
-                mRefreshButton.setClickable(false);
-                mRefreshButton.setVisibility(View.INVISIBLE);
-            }
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (isOn) {
+                        mRefreshButton.setVisibility(View.VISIBLE);
+                        mRefreshButton.setClickable(true);
+                    } else {
+                        mRefreshButton.setClickable(false);
+                        mRefreshButton.setVisibility(View.INVISIBLE);
+                    }
+                }
+            });
         }
     }
 
@@ -232,16 +255,21 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param isOn Turns back button on if true, and off if false.
      */
-    public void toggleBackButton(boolean isOn) {
-        if (mBackButton != null) {
-            if (isOn) {
-                mBackButton.setVisibility(View.VISIBLE);
-                mBackButton.setClickable(true);
-            } else {
-                mBackButton.setClickable(false);
-                mBackButton.setVisibility(View.INVISIBLE);
+    public void toggleBackButton(final boolean isOn) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (mBackButton != null) {
+                    if (isOn) {
+                        mBackButton.setVisibility(View.VISIBLE);
+                        mBackButton.setClickable(true);
+                    } else {
+                        mBackButton.setClickable(false);
+                        mBackButton.setVisibility(View.INVISIBLE);
+                    }
+                }
             }
-        }
+        });
     }
 
 
@@ -251,27 +279,30 @@ public class MainActivity extends AppCompatActivity {
      * @param isOn            Turns options button on if true, and off if false.
      * @param onClickListener {@link android.view.View.OnClickListener} to apply, if any; can be null.
      */
-    public void toggleOptionsButton(boolean isOn, @Nullable View.OnClickListener onClickListener) {
+    public void toggleOptionsButton(final boolean isOn, @Nullable final View.OnClickListener onClickListener) {
         logDebug("toggleOptionsButton reached begin for isOn=" + isOn);
 
-        if (mOptionsButton != null) {
-            logDebug("toggleOptionsButton options button is not null");
-            if (isOn) {
-//                mOptionsButton.setVisibility(View.VISIBLE);
-                mOptionsButton.show();
-                mOptionsButton.setClickable(true);
-            } else {
-                mOptionsButton.setClickable(false);
-                mOptionsButton.hide();
-//                mOptionsButton.setVisibility(View.GONE);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (mOptionsButton != null) {
+                    logDebug("toggleOptionsButton options button is not null");
+                    if (isOn) {
+                        mOptionsButton.show();
+                        mOptionsButton.setClickable(true);
+                    } else {
+                        mOptionsButton.setClickable(false);
+                        mOptionsButton.hide();
+                    }
+                    if (onClickListener == null) {
+                        mOptionsButton.setClickable(false);
+                    } else {
+                        mOptionsButton.setOnClickListener(onClickListener);
+                        mOptionsButton.setClickable(true);
+                    }
+                }
             }
-            if (onClickListener == null) {
-                mOptionsButton.setClickable(false);
-            } else {
-                mOptionsButton.setOnClickListener(onClickListener);
-                mOptionsButton.setClickable(true);
-            }
-        }
+        });
     }
 
 
@@ -280,66 +311,76 @@ public class MainActivity extends AppCompatActivity {
     public void showDimView() {
         if (mDimAnimationHappening) return;
 
-        if (mDimView != null) {
-            mDimView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mCurrFragment != null && mCurrFragment.optionsPopupIsShowing()) {
-                        mCurrFragment.hideOptionsLayout();
-                    }
-                }
-            });
-            mDimView.setClickable(true);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (mDimView != null) {
+                    mDimView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (mCurrFragment != null && mCurrFragment.optionsPopupIsShowing()) {
+                                mCurrFragment.hideOptionsLayout();
+                            }
+                        }
+                    });
+                    mDimView.setClickable(true);
 
-            Animation animation = new AlphaAnimation(0f, 1f);
-            animation.setDuration(getResources().getInteger(R.integer.bottom_sheet_anim_duration));
-            animation.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-                    mDimView.setVisibility(View.VISIBLE);
-                    mDimAnimationHappening = true;
-                }
+                    Animation animation = new AlphaAnimation(0f, 1f);
+                    animation.setDuration(getResources().getInteger(R.integer.bottom_sheet_anim_duration));
+                    animation.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
+                            mDimView.setVisibility(View.VISIBLE);
+                            mDimAnimationHappening = true;
+                        }
 
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    mDimAnimationHappening = false;
-                }
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            mDimAnimationHappening = false;
+                        }
 
-                @Override
-                public void onAnimationRepeat(Animation animation) {
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
 
+                        }
+                    });
+                    mDimView.startAnimation(animation);
                 }
-            });
-            mDimView.startAnimation(animation);
-        }
+            }
+        });
     }
 
     public void hideDimView() {
         if (mDimAnimationHappening) return;
 
-        if (mDimView != null) {
-            Animation animation = new AlphaAnimation(1f, 0f);
-            animation.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-                    mDimView.setVisibility(View.VISIBLE);
-                    mDimAnimationHappening = true;
-                }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (mDimView != null) {
+                    Animation animation = new AlphaAnimation(1f, 0f);
+                    animation.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
+                            mDimView.setVisibility(View.VISIBLE);
+                            mDimAnimationHappening = true;
+                        }
 
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    mDimView.setVisibility(View.GONE);
-                    mDimAnimationHappening = false;
-                }
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            mDimView.setVisibility(View.GONE);
+                            mDimAnimationHappening = false;
+                        }
 
-                @Override
-                public void onAnimationRepeat(Animation animation) {
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
 
+                        }
+                    });
+                    animation.setDuration(getResources().getInteger(R.integer.bottom_sheet_anim_duration));
+                    mDimView.startAnimation(animation);
                 }
-            });
-            animation.setDuration(getResources().getInteger(R.integer.bottom_sheet_anim_duration));
-            mDimView.startAnimation(animation);
-        }
+            }
+        });
     }
 
     public void setOptionsButtonViewAnchor(int layoutRes) {
@@ -351,25 +392,35 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void showFloatingInfoText(String info) {
-        if (mFloatingInfoTextView != null && mContentFrame != null) {
-            mFloatingInfoTextView.setText(info);
-            mFloatingInfoTextView.setTypeface(TypefaceUtil.getItalic(this));
-            mFloatingInfoTextView.setVisibility(View.VISIBLE);
-            mFloatingInfoTextView.setSelected(true);
-            CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) mContentFrame.getLayoutParams();
-            layoutParams.topMargin = (int)(getResources().getDimension(R.dimen.custom_toolbar_height) + getResources().getDimension(R.dimen.main_content_floating_info_height));
-            mContentFrame.setLayoutParams(layoutParams);
-        }
+    public void showFloatingInfoText(final String info) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (mFloatingInfoTextView != null && mContentFrame != null) {
+                    mFloatingInfoTextView.setText(info);
+                    mFloatingInfoTextView.setTypeface(TypefaceUtil.getItalic(MainActivity.this));
+                    mFloatingInfoTextView.setVisibility(View.VISIBLE);
+                    mFloatingInfoTextView.setSelected(true);
+                    CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) mContentFrame.getLayoutParams();
+                    layoutParams.topMargin = (int) (getResources().getDimension(R.dimen.custom_toolbar_height) + getResources().getDimension(R.dimen.main_content_floating_info_height));
+                    mContentFrame.setLayoutParams(layoutParams);
+                }
+            }
+        });
     }
 
     public void hideFloatingInfoText() {
-        if (mFloatingInfoTextView != null && mContentFrame != null) {
-            mFloatingInfoTextView.setVisibility(View.GONE);
-            CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) mContentFrame.getLayoutParams();
-            layoutParams.topMargin = (int)(getResources().getDimension(R.dimen.custom_toolbar_height));
-            mContentFrame.setLayoutParams(layoutParams);
-        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (mFloatingInfoTextView != null && mContentFrame != null) {
+                    mFloatingInfoTextView.setVisibility(View.GONE);
+                    CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) mContentFrame.getLayoutParams();
+                    layoutParams.topMargin = (int) (getResources().getDimension(R.dimen.custom_toolbar_height));
+                    mContentFrame.setLayoutParams(layoutParams);
+                }
+            }
+        });
     }
 
 }

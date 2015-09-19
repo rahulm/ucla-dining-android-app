@@ -129,7 +129,7 @@ public class ResidentialRestaurantMenuPage extends BaseFragment {
             currentMealTime = options.get(DiningAPIEndpoints.PARAM_KEY_MEAL_TIME);
         }
 
-        LinearLayout linearLayout = GeneralUtils.getInflatedBottomSheetMealPickerLayout(getActivity(),
+        LinearLayout linearLayout = GeneralUtils.getInflatedBottomSheetOptionsPickerLayout(getActivity(),
                 items, currentMealTime,
                 new AdapterView.OnItemSelectedListener() {
                     @Override

@@ -9,15 +9,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.maninbrown.ucladining.R;
 import com.maninbrown.ucladining.util.FoodItemUtils;
+import com.maninbrown.ucladining.util.OnOptionsDismissListener;
 import com.maninbrown.ucladining.util.TypefaceUtil;
+import com.maninbrown.ucladining.util.bottomSheetUtils.GeneralUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import api.DiningAPI;
 import api.DiningAPIEndpoints;
@@ -43,6 +46,10 @@ public class QuickServiceMenuPage extends BaseFragment {
 
     private QuickServiceRestaurantMenu mQuickServiceRestaurantMenu;
 
+    private String mCurrentOption;
+
+    private HashMap<String, String> mOptions;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,8 +60,9 @@ public class QuickServiceMenuPage extends BaseFragment {
         setLayoutId(R.layout.generic_refreshable_list_page);
 
         Bundle bundle = getArguments();
-        if (bundle==null || !bundle.containsKey(DiningAPIEndpoints.PARAM_KEY_RESTAURANT)) {
-            setRecyclerAdapter(null); return;
+        if (bundle == null || !bundle.containsKey(DiningAPIEndpoints.PARAM_KEY_RESTAURANT)) {
+            setRecyclerAdapter(null);
+            return;
         } else {
             mRateableItem = (RateableItem) bundle.getSerializable(DiningAPIEndpoints.PARAM_KEY_RESTAURANT);
         }
@@ -62,7 +70,7 @@ public class QuickServiceMenuPage extends BaseFragment {
         setToolbarTitle(mRateableItem.getRestaurantName());
 
 
-        // TODO: options
+        setOptionsButtonIsOn(false, null, null);
     }
 
     @Override
@@ -75,6 +83,17 @@ public class QuickServiceMenuPage extends BaseFragment {
         if (!isRefreshing) {
             isRefreshing = true;
             showSwipeRefresh();
+
+            if (mCurrentOption != null && !mCurrentOption.isEmpty() && mOptions != null && !mOptions.isEmpty()) {
+                HashMap<String, String> map = new HashMap<>();
+                map.put(RateableItem.KEY_ITEM_NAME, mRateableItem.getItemName());
+                map.put(RateableItem.KEY_ITEM_DESCRIPTION, mRateableItem.getItemDescription());
+                map.put(RateableItem.KEY_ITEM_RESTAURANT_NAME, mRateableItem.getRestaurantName());
+                map.put(RateableItem.KEY_ITEM_SECTION_NAME, mRateableItem.getSectionName());
+                map.put(RateableItem.KEY_TARGET_URL, mOptions.get(mCurrentOption));
+                mRateableItem = new RateableItem(map, RateableItem.ItemType.QuickServiceRestaurant);
+            }
+
             DiningAPI.getQuickServiceRestaurantMenu(mRateableItem, new OnCompleteListener() {
                 @Override
                 public void onComplete() {
@@ -84,11 +103,12 @@ public class QuickServiceMenuPage extends BaseFragment {
             }, new OnSuccessListener() {
                 @Override
                 public void onSuccess(BaseModel baseModel) {
-                    if (baseModel!=null && baseModel instanceof QuickServiceRestaurantMenu) {
+                    if (baseModel != null && baseModel instanceof QuickServiceRestaurantMenu) {
                         mQuickServiceRestaurantMenu = (QuickServiceRestaurantMenu) baseModel;
                         parseAndPopulateList();
                     } else {
-                        Log.e(TAG, "onSuccess base model is null or not a quick service restaurant menu"); setRecyclerAdapter(null);
+                        Log.e(TAG, "onSuccess base model is null or not a quick service restaurant menu");
+                        setRecyclerAdapter(null);
                     }
                 }
             }, new OnFailureListener() {
@@ -102,10 +122,66 @@ public class QuickServiceMenuPage extends BaseFragment {
         }
     }
 
+    @Override
+    protected ArrayList<View> createOptionsLayoutViews() {
+        if (mCurrentOption == null || mCurrentOption.isEmpty() || mOptions == null || mOptions.isEmpty()) {
+            Log.e(TAG, "createOptionsLayoutViews has reached null options!");
+            return new ArrayList<>();
+        }
+
+        ArrayList<View> views = new ArrayList<>();
+
+        views.add(GeneralUtils.getInflatedBottomSheetTitleView(getActivity(), new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideOptionsLayout();
+            }
+        }));
+
+        ArrayList<String> options = new ArrayList<>();
+        for (String key : mOptions.keySet()) {
+            options.add(key);
+        }
+
+        final String previousOption = mCurrentOption;
+        views.add(GeneralUtils.getInflatedBottomSheetOptionsPickerLayout(getActivity(), options, mCurrentOption,
+                new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        mCurrentOption = parent.getItemAtPosition(position).toString();
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+                        mCurrentOption = previousOption;
+                    }
+                }));
+
+        return views;
+    }
+
     private void parseAndPopulateList() {
-        // TODO: set adapter
+        String currentOption = mQuickServiceRestaurantMenu.getCurrentOption();
+        HashMap<String, String> map = mQuickServiceRestaurantMenu.getOptions();
+        if (currentOption != null && !currentOption.isEmpty() && map != null && !map.isEmpty()) {
+            mCurrentOption = currentOption;
+            mOptions = map;
+            getMainActivity().showFloatingInfoText(mCurrentOption);
+            setOptionsButtonIsOn(true, null, new OnOptionsDismissListener() {
+                @Override
+                public void onOptionsDismiss() {
+                    doRefresh(null);
+                }
+            });
+        } else {
+            mCurrentOption = null;
+            mOptions = null;
+            getMainActivity().hideFloatingInfoText();
+            setOptionsButtonIsOn(false, null, null);
+        }
+
         ArrayList<Section> sections = mQuickServiceRestaurantMenu.getSections();
-        setRecyclerAdapter((sections==null) ? null : new QuickServiceMenuAdapter(sections));
+        setRecyclerAdapter((sections == null) ? null : new QuickServiceMenuAdapter(sections));
     }
 
 
@@ -215,7 +291,7 @@ public class QuickServiceMenuPage extends BaseFragment {
 
                         rootView.findViewById(R.id.food_item_right_button).setVisibility(View.GONE);
 
-                        if (infoItem.getInfoText()==null || infoItem.getInfoText().isEmpty()) {
+                        if (infoItem.getInfoText() == null || infoItem.getInfoText().isEmpty()) {
                             rootView.setVisibility(View.GONE);
                             // TODO: look into this
                         }

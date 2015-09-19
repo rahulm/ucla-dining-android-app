@@ -68,9 +68,9 @@ public class GeneralUtils {
         return datePicker;
     }
 
-    public static LinearLayout getInflatedBottomSheetMealPickerLayout(Activity activity, List<String> items, final String currOptions, AdapterView.OnItemSelectedListener onItemSelectedListener) {
+    public static LinearLayout getInflatedBottomSheetOptionsPickerLayout(Activity activity, List<String> items, final String currOptions, AdapterView.OnItemSelectedListener onItemSelectedListener) {
         LinearLayout linearLayout = (LinearLayout) LayoutInflater.from(activity).inflate(R.layout.bottom_sheet_meal_picker, null);
-//        ((TextView) linearLayout.findViewById(R.id.bottom_sheet_meal_text)).setTypeface(TypefaceUtil.getBold(activity));
+
         final Spinner spinner = (Spinner) linearLayout.findViewById(R.id.bottom_sheet_meal_spinner);
 
         final ArrayAdapter<String> spinnerAdapter = new CustomSpinnerAdapter(activity, R.layout.meal_spinner_item);
