@@ -436,4 +436,9 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
 
     public abstract void doRefresh(@Nullable RefreshListener refreshListener);
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        getMainActivity().hideFloatingInfoText();
+    }
 }

@@ -72,6 +72,13 @@ public class ResidentialRestaurantsPage extends BaseFragment {
                 logDebug("doRefresh date param: " + DiningAPIEndpoints.PARAM_KEY_DATE + ": " + DateUtils.getDateStringFromDateTime(mCurrentDate));
             }
 
+            HashMap<String, String> map = getCurrentOptions();
+            if (map == null || map.isEmpty() || ((!map.containsKey(DiningAPIEndpoints.PARAM_KEY_DATE) && mCurrentDate == null) && (!map.containsKey(DiningAPIEndpoints.PARAM_KEY_MEAL_TIME)))) {
+                getMainActivity().showFloatingInfoText("Today's menu for meals now");
+            } else {
+                getMainActivity().hideFloatingInfoText();
+            }
+
             DiningAPI.getResidentialRestaurantsPage(getCurrentOptions(), new OnCompleteListener() {
                 @Override
                 public void onComplete() {
@@ -130,7 +137,7 @@ public class ResidentialRestaurantsPage extends BaseFragment {
             }
         };
 
-        // TODO: set up options
+
         setOptionsButtonIsOn(true, new View.OnClickListener() {
             @Override
             public void onClick(View v) {

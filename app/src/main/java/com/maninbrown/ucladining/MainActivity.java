@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton mOptionsButton;
 
     private View mDimView;
+    private TextView mFloatingInfoTextView;
 
     // Main content stuff
     private FrameLayout mContentFrame;
@@ -138,6 +139,10 @@ public class MainActivity extends AppCompatActivity {
 
         mDimView = findViewById(R.id.main_dim_view);
         mDimView.setVisibility(View.GONE);
+
+        mFloatingInfoTextView = (TextView) findViewById(R.id.main_floating_info_text);
+        mFloatingInfoTextView.setTypeface(TypefaceUtil.getItalic(this));
+        mFloatingInfoTextView.setVisibility(View.GONE);
     }
 
     /**
@@ -343,6 +348,27 @@ public class MainActivity extends AppCompatActivity {
         layoutParams.setAnchorId(layoutRes);
         layoutParams.anchorGravity = Gravity.TOP;
         mOptionsButton.setLayoutParams(layoutParams);
+    }
+
+
+    public void showFloatingInfoText(String info) {
+        if (mFloatingInfoTextView != null && mContentFrame != null) {
+            mFloatingInfoTextView.setText(info);
+            mFloatingInfoTextView.setTypeface(TypefaceUtil.getItalic(this));
+            mFloatingInfoTextView.setVisibility(View.VISIBLE);
+            CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) mContentFrame.getLayoutParams();
+            layoutParams.topMargin = (int)(getResources().getDimension(R.dimen.custom_toolbar_height) + getResources().getDimension(R.dimen.main_content_floating_info_height));
+            mContentFrame.setLayoutParams(layoutParams);
+        }
+    }
+
+    public void hideFloatingInfoText() {
+        if (mFloatingInfoTextView != null && mContentFrame != null) {
+            mFloatingInfoTextView.setVisibility(View.GONE);
+            CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) mContentFrame.getLayoutParams();
+            layoutParams.topMargin = (int)(getResources().getDimension(R.dimen.custom_toolbar_height));
+            mContentFrame.setLayoutParams(layoutParams);
+        }
     }
 
 }
