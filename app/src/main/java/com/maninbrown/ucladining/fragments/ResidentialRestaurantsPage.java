@@ -4,13 +4,11 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -22,12 +20,12 @@ import com.maninbrown.ucladining.util.DateUtils;
 import com.maninbrown.ucladining.util.FoodItemUtils;
 import com.maninbrown.ucladining.util.OnOptionsDismissListener;
 import com.maninbrown.ucladining.util.TypefaceUtil;
-import com.maninbrown.ucladining.util.bottomSheetUtils.CustomSpinnerAdapter;
 import com.maninbrown.ucladining.util.bottomSheetUtils.GeneralUtils;
 
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import api.DiningAPI;
 import api.DiningAPIEndpoints;
@@ -158,66 +156,39 @@ public class ResidentialRestaurantsPage extends BaseFragment {
             }
         }));
 
+        String[] strings = getResources().getStringArray(R.array.spinner_residential_restaurants);
+        ArrayList<String> items = new ArrayList<>();
+        Collections.addAll(items, strings);
 
-        if (getActivity() == null) {
-            Log.e(TAG, "createOptionsLayoutViews activity is null!");
-        }
-        LinearLayout linearLayout = (LinearLayout) LayoutInflater.from(getActivity()).inflate(R.layout.bottom_sheet_meal_picker, null);
-        ((TextView) linearLayout.findViewById(R.id.bottom_sheet_meal_text)).setTypeface(TypefaceUtil.getBold(getActivity()));
-        mSpinner = (Spinner) linearLayout.findViewById(R.id.bottom_sheet_meal_spinner);
+        LinearLayout linearLayout = GeneralUtils.getInflatedBottomSheetMealPickerLayout(getActivity(),
+                items,
+                new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        logDebug("onItemSelected for position: " + position);
+                        logDebug("onItemSelected item string is: " + parent.getItemAtPosition(position).toString());
+                    }
 
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+                        logDebug("onNothingSelected nothing selected");
+                    }
+                });
 
-        String[] spinnerEntries = getResources().getStringArray(R.array.spinner_residential_restaurants);
-
-        ArrayAdapter<String> spinnerAdapter = new CustomSpinnerAdapter(getActivity(), R.layout.meal_spinner_item);
-        spinnerAdapter.addAll(spinnerEntries);
-        spinnerAdapter.setDropDownViewResource(R.layout.meal_spinner_item);
-        mSpinner.setAdapter(spinnerAdapter);
-
-        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                logDebug("onItemSelected for position: " + position);
-                logDebug("onItemSelected item string is: " + parent.getItemAtPosition(position).toString());
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                logDebug("onNothingSelected nothing selected");
-            }
-        });
         // TODO: do the spinner adapter
         views.add(linearLayout);
 
 
-        mDatePicker = new DatePicker(getActivity());
-        mDatePicker.setCalendarViewShown(false);
-        mDatePicker.setSpinnersShown(true);
-
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
-
-        mDatePicker.setLayoutParams(layoutParams);
-
-
-        int day, month, year;
-        if (mCurrentDate == null) {
-            mCurrentDate = DateTime.now();
-        }
-        day = mCurrentDate.getDayOfMonth();
-        month = mCurrentDate.getMonthOfYear() - 1;
-        year = mCurrentDate.getYear();
-        mDatePicker.init(year, month, day, new DatePicker.OnDateChangedListener() {
-            @Override
-            public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                logDebug("onDateChanged reached for day: " + dayOfMonth + ", month: " + monthOfYear + ", year: " + year);
-                mCurrentDate = new DateTime()
-                        .withYear(year)
-                        .withMonthOfYear(monthOfYear + 1)
-                        .withDayOfMonth(dayOfMonth);
-            }
-        });
-
+        mDatePicker = GeneralUtils.getInflatedBottomSheetDatePicker(getActivity(), mCurrentDate,
+                new DatePicker.OnDateChangedListener() {
+                    @Override
+                    public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        mCurrentDate = new DateTime()
+                                .withYear(year)
+                                .withMonthOfYear(monthOfYear + 1)
+                                .withDayOfMonth(dayOfMonth);
+                    }
+                });
         views.add(mDatePicker);
 
         return views;
