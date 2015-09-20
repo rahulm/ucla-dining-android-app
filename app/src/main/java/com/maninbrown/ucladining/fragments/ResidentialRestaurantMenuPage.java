@@ -23,15 +23,14 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 
 import api.DiningAPI;
 import api.DiningAPIEndpoints;
 import models.BaseModel;
 import models.RateableItem;
-import models.Section;
 import models.SectionItem;
+import models.SectionWithOptions;
 import util.diningAPICallbacks.OnCompleteListener;
 import util.diningAPICallbacks.OnFailureListener;
 import util.diningAPICallbacks.OnSuccessListener;
@@ -46,11 +45,13 @@ public class ResidentialRestaurantMenuPage extends BaseFragment {
 
     private String mRestaurantName;
 
-    private Section mFullMenuSection;
+    private SectionWithOptions mFullMenuSection;
 
     private DateTime mCurrentDate;
 
     private DatePicker mDatePicker;
+
+    private ArrayList<String> mOptions;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -119,10 +120,6 @@ public class ResidentialRestaurantMenuPage extends BaseFragment {
             }
         }));
 
-        String[] strings = getResources().getStringArray(R.array.spinner_residential_restaurants);
-        ArrayList<String> items = new ArrayList<>();
-        Collections.addAll(items, strings);
-
         String currentMealTime = null;
         HashMap<String, String> options = getCurrentOptions();
         if (options != null && options.containsKey(DiningAPIEndpoints.PARAM_KEY_MEAL_TIME)) {
@@ -130,7 +127,7 @@ public class ResidentialRestaurantMenuPage extends BaseFragment {
         }
 
         LinearLayout linearLayout = GeneralUtils.getInflatedBottomSheetOptionsPickerLayout(getActivity(),
-                items, currentMealTime,
+                mOptions, currentMealTime,
                 new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -172,7 +169,7 @@ public class ResidentialRestaurantMenuPage extends BaseFragment {
             showSwipeRefresh();
 
             HashMap<String, String> map = getCurrentOptions();
-            String baseToShow = "Menu for meals", dateToShow = "now", mealTimePrefix = "";
+            String baseToShow = "Menu for meals", dateToShow = "today", mealTimePrefix = "";
             if (mCurrentDate != null) {
                 dateToShow = DateTimeFormat.forPattern("MMM dd, yyyy").print(mCurrentDate);
             }
@@ -195,7 +192,7 @@ public class ResidentialRestaurantMenuPage extends BaseFragment {
                     if (baseModel == null) {
                         setRecyclerAdapter(null);
                     } else {
-                        mFullMenuSection = (Section) baseModel;
+                        mFullMenuSection = (SectionWithOptions) baseModel;
                         parseAndPopulateList();
                     }
                 }
@@ -210,6 +207,35 @@ public class ResidentialRestaurantMenuPage extends BaseFragment {
     }
 
     private void parseAndPopulateList() {
+        String currentOption = mFullMenuSection.getCurrentOption();
+        ArrayList<String> map = mFullMenuSection.getOptions();
+        if (currentOption != null && !currentOption.isEmpty() && map != null && !map.isEmpty()) {
+            addCurrentOption(DiningAPIEndpoints.PARAM_KEY_MEAL_TIME, currentOption);
+            mOptions = map;
+
+            HashMap<String, String> currentOptions = getCurrentOptions();
+            String baseToShow = "Menu for meals", dateToShow = "today", mealTimePrefix = "";
+            if (mCurrentDate != null) {
+                dateToShow = DateTimeFormat.forPattern("MMM dd, yyyy").print(mCurrentDate);
+            }
+            if (currentOptions != null && currentOptions.containsKey(DiningAPIEndpoints.PARAM_KEY_MEAL_TIME)) {
+                mealTimePrefix = currentOptions.get(DiningAPIEndpoints.PARAM_KEY_MEAL_TIME);
+            }
+            getMainActivity().showFloatingInfoText(mealTimePrefix + " " + baseToShow + " " + dateToShow);
+
+            setOptionsButtonIsOn(true, null, new OnOptionsDismissListener() {
+                @Override
+                public void onOptionsDismiss() {
+                    doRefresh(null);
+                }
+            });
+        } else {
+            removeCurrentOption(DiningAPIEndpoints.PARAM_KEY_MEAL_TIME);
+            mOptions = null;
+            getMainActivity().hideFloatingInfoText();
+            setOptionsButtonIsOn(false, null, null);
+        }
+
         ArrayList<SectionItem> sectionItems = mFullMenuSection.getSectionItems();
         setRecyclerAdapter((sectionItems == null) ? null : new ResidentialRestaurantMenuAdapter(sectionItems));
     }

@@ -73,7 +73,7 @@ public class ResidentialRestaurantsPage extends BaseFragment {
             }
 
             HashMap<String, String> map = getCurrentOptions();
-            String baseToShow = "Menu for meals", dateToShow = "now", mealTimePrefix = "";
+            String baseToShow = "Menu for meals", dateToShow = "today", mealTimePrefix = "";
             if (mCurrentDate != null) {
                 dateToShow = DateTimeFormat.forPattern("MMM dd, yyyy").print(mCurrentDate);
             }
@@ -155,10 +155,6 @@ public class ResidentialRestaurantsPage extends BaseFragment {
             }
         }));
 
-//        String[] strings = getResources().getStringArray(R.array.spinner_residential_restaurants);
-//        ArrayList<String> items = new ArrayList<>();
-//        Collections.addAll(items, strings);
-
         String currentMealTime = null;
         HashMap<String, String> options = getCurrentOptions();
         if (options != null && options.containsKey(DiningAPIEndpoints.PARAM_KEY_MEAL_TIME)) {
@@ -216,7 +212,7 @@ public class ResidentialRestaurantsPage extends BaseFragment {
             mOptions = map;
 
             HashMap<String, String> currentOptions = getCurrentOptions();
-            String baseToShow = "Menu for meals", dateToShow = "now", mealTimePrefix = "";
+            String baseToShow = "Menu for meals", dateToShow = "today", mealTimePrefix = "";
             if (mCurrentDate != null) {
                 dateToShow = DateTimeFormat.forPattern("MMM dd, yyyy").print(mCurrentDate);
             }
