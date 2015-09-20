@@ -37,5 +37,5 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:23.0.1'
     compile files('libs/jsoup-1.8.3.jar')
     compile files('libs/joda-time-2.8.2.jar')
-    compile files('libs/UCLADiningAPI-v_4.jar')
+    compile files('libs/UCLADiningAPI-v_5.jar')
 }
