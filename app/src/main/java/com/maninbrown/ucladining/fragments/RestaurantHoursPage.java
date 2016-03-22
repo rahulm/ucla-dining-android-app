@@ -43,7 +43,7 @@ public class RestaurantHoursPage extends BaseFragment {
         setLayoutId(R.layout.generic_refreshable_list_page);
         setToolbarTitle("Hours");
 
-        // TODO: set options
+        setOptionsButtonIsOn(false, null, null);
     }
 
     @Override
@@ -135,7 +135,11 @@ public class RestaurantHoursPage extends BaseFragment {
                 for (String hour : hours) {
                     View rootView = LayoutInflater.from(getActivity()).inflate(R.layout.restaurant_hours_item, null, false);
                     TextView textView = (TextView) rootView.findViewById(R.id.restaurant_hours_item_text);
-                    textView.setText(hour.replace("<br>", ""));
+                    hour = hour.replace("<br>", "");
+                    hour = hour.replace("</br>", "");
+                    hour = hour.replace("<i>", "");
+                    hour = hour.replace("</i>", "");
+                    textView.setText(hour);
                     textView.setTypeface(TypefaceUtil.getItalic(getActivity()));
 
                     ViewParent parent = rootView.getParent();

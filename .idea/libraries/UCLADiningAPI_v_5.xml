@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="UCLADiningAPI-v_5">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/app/libs/UCLADiningAPI-v_5.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
